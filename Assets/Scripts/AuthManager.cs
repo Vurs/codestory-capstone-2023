@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
+using Firebase.Database;
 using TMPro;
+using System;
+using System.Threading.Tasks;
 
 public class AuthManager : MonoBehaviour
 {
-    // Firebase variables
-    [Header("Firebase")]
-    public DependencyStatus dependencyStatus;
-    public FirebaseAuth auth;
-    public FirebaseUser user;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private DatabaseReference dbReference;
 
     // Login variables
     [Header("Login")]
@@ -35,30 +36,22 @@ public class AuthManager : MonoBehaviour
 
     private void Awake()
     {
-        // Check that all the necessary dependencies for Firebase are on the system
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        auth = FirebaseHandler.GetFirebaseAuth();
+        if (auth == null)
         {
-            dependencyStatus = task.Result;
-            if (dependencyStatus == DependencyStatus.Available)
-            {
-                InitializeFirebase();
-            }
-            else
-            {
-                Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
-            }
-        });
-    }
+            Debug.LogError("FirebaseAuth is null, the app will not perform correctly.");
+        }
 
-    private void InitializeFirebase()
-    {
-        Debug.Log("Setting up Firebase Auth");
-        auth = FirebaseAuth.DefaultInstance;
+        dbReference = FirebaseHandler.GetDatabaseReference();
+        if (dbReference == null)
+        {
+            Debug.LogError("FirebaseDatabase is null, the app will not perform correctly.");
+        }
     }
 
     public void LoginButtonPressed()
     {
-        StartCoroutine(Login(emailLoginField.text, passwordLoginField.text));
+        StartCoroutine(LoginAsync(emailLoginField.text, passwordLoginField.text));
     }
 
     public void RegisterButtonPressed()
@@ -66,45 +59,18 @@ public class AuthManager : MonoBehaviour
         StartCoroutine(Register(emailRegisterField.text, passwordRegisterField.text, usernameRegisterField.text));
     }
 
-    private IEnumerator Login(string _email, string _password)
+    private IEnumerator LoginAsync(string _email, string _password)
+    {
+        yield return Login(emailLoginField.text, passwordLoginField.text);
+    }
+
+    private async Task Login(string _email, string _password)
     {
         // Call the FirebaseAuth sign in function passing the email and password
-        var loginTask = auth.SignInWithEmailAndPasswordAsync(_email, _password);
-
-        // Wait until the task completes
-        yield return new WaitUntil(predicate: () => loginTask.IsCompleted);
-
-        if (loginTask.Exception != null)
+        try
         {
-            // If there are errors handle them
-            Debug.LogWarning($"Failed to register task with {loginTask.Exception}");
-            FirebaseException firebaseEx = loginTask.Exception.GetBaseException() as FirebaseException;
-            AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
-
-            string message = "Login failed!";
-            switch (errorCode)
-            {
-                case AuthError.MissingEmail:
-                    message = "Missing email";
-                    break;
-                case AuthError.MissingPassword:
-                    message = "Missing password";
-                    break;
-                case AuthError.WrongPassword:
-                    message = "Incorrect password";
-                    break;
-                case AuthError.InvalidEmail:
-                    message = "Invalid email";
-                    break;
-                case AuthError.UserNotFound:
-                    message = "Account does not exist";
-                    break;
-            }
-            warningLoginText.text = message;
-        }
-        else
-        {
-            user = loginTask.Result.User;
+            var loginTask = await auth.SignInWithEmailAndPasswordAsync(_email, _password);
+            user = loginTask.User;
 
             // Check if the user has verified their email yet
             if (user.IsEmailVerified == false)
@@ -118,6 +84,74 @@ public class AuthManager : MonoBehaviour
                 Debug.Log($"User signed in successfully: {user.DisplayName}, {user.Email}");
                 warningLoginText.text = "";
                 confirmLoginText.text = "Signed in!";
+
+                // Create a cookie key and value
+                string deviceIdentifier = SystemInfo.deviceUniqueIdentifier;
+                if (deviceIdentifier != SystemInfo.unsupportedIdentifier && deviceIdentifier != "")
+                {
+                    Dictionary<string, string> existingCookies = await FirebaseHandler.GetCookiesDictionary(dbReference, user.UserId);
+                    if (existingCookies == null)
+                    {
+                        Debug.LogError("There was an error while trying to fetch the user's existing cookies.");
+                    }
+                    else
+                    {
+                        string cookie = dbReference.Push().Key;
+
+                        // Set the UID and Cookie PlayerPrefs for autologin purposes
+                        PlayerPrefs.SetString("UID", user.UserId);
+                        PlayerPrefs.SetString("Cookie", cookie);
+
+                        existingCookies[deviceIdentifier] = cookie;
+
+                        // Create the cookie in the user's database entry
+                        string userPath = $"users/{user.UserId}/cookies";
+
+                        await dbReference.Child(userPath).SetValueAsync(existingCookies);
+                        Debug.Log("User entry created successfully in the 'users' table.");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Device identifier is unsupported, could not create an autologin cookie!");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions
+            Debug.LogWarning($"Failed to register task with {ex}");
+
+            if (typeof(FirebaseException) == ex.InnerException.GetType())
+            {
+                FirebaseException firebaseException = (FirebaseException)ex.InnerException;
+                AuthError errorCode = (AuthError)firebaseException.ErrorCode;
+
+                string message = "Login failed!";
+                switch (errorCode)
+                {
+                    case AuthError.MissingEmail:
+                        message = "Missing email";
+                        break;
+                    case AuthError.MissingPassword:
+                        message = "Missing password";
+                        break;
+                    case AuthError.WrongPassword:
+                        message = "Incorrect password";
+                        break;
+                    case AuthError.InvalidEmail:
+                        message = "Invalid email";
+                        break;
+                    case AuthError.UserNotFound:
+                        message = "Account does not exist";
+                        break;
+                }
+                warningLoginText.text = message;
+            }
+            else
+            {
+                // Handle other exceptions
+                Debug.LogError($"Unexpected exception: {ex}");
             }
         }
     }

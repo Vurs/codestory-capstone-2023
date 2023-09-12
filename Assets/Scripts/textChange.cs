@@ -11,6 +11,8 @@ public class textChange : MonoBehaviour
 {
     //Questions that we will ask the user
     string[] questions = {"What do you end a line of code with?", "What do we use to print to a terminal in Java?", "End"};
+    string[] answers = {";", "System.out.println();" };
+    string[] fakeOuts = {".", "print();"}; 
     int questionIndex = 0;
 
     //Accessing the TextMesh component in Unity

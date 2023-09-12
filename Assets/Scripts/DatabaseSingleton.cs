@@ -40,22 +40,22 @@ public class DatabaseSingleton : Singleton<DatabaseSingleton>
         // For testing purposes, will remove this later
         string testUsername = $"user-{userId}";
 
-        User newUser = new(testUsername, emailInputText, passwordInputText);
-        string json = JsonUtility.ToJson(newUser);
-        await dbReference.Child("users").Child(userId).SetRawJsonValueAsync(json).ConfigureAwait(false);
+        // User newUser = new(testUsername, emailInputText, passwordInputText);
+        // string json = JsonUtility.ToJson(newUser);
+        // await dbReference.Child("users").Child(userId).SetRawJsonValueAsync(json).ConfigureAwait(false);
 
         Debug.Log($"User {testUsername} added successfully!");
     }
 
-    public async Task<User> GetUserById(int userId)
-    {
-        DataSnapshot snapshot = await dbReference.Child("users").Child(userId.ToString()).GetValueAsync().ConfigureAwait(false);
+    // public async Task<User> GetUserById(int userId)
+    // {
+    //     DataSnapshot snapshot = await dbReference.Child("users").Child(userId.ToString()).GetValueAsync().ConfigureAwait(false);
 
-        string json = snapshot.GetRawJsonValue();
-        User user = JsonUtility.FromJson<User>(json);
+    //     string json = snapshot.GetRawJsonValue();
+    //     User user = JsonUtility.FromJson<User>(json);
 
-        return user;
-    }
+    //     return user;
+    // }
 
     public void InitializeFirebase()
     {

@@ -54,7 +54,6 @@ public class ActivityPopulator : MonoBehaviour
 
         Task task = DatabaseHandler.FetchStoriesAsync();
         yield return new WaitUntil(() => task.IsCompleted);
-        // yield return new WaitForSeconds(0.001f);
 
         stories = DatabaseHandler.GetFetchedStories();
 
@@ -69,7 +68,6 @@ public class ActivityPopulator : MonoBehaviour
 
         Task task = DatabaseHandler.FetchMinigamesAsync();
         yield return new WaitUntil(() => task.IsCompleted);
-        // yield return new WaitForSeconds(0.001f);
 
         minigames = DatabaseHandler.GetFetchedMinigames();
 
@@ -85,7 +83,7 @@ public class ActivityPopulator : MonoBehaviour
             GameObject activityClone = Instantiate(activityPrefab);
             GameObject title = activityClone.transform.Find("Title").gameObject;
             TMP_Text titleText = title.GetComponent<TMP_Text>();
-            titleText.text = story.name;
+            titleText.text = story.GetName();
             activityClone.transform.SetParent(parent.transform, false);
 
             Button button = activityClone.GetComponent<Button>();
@@ -100,7 +98,7 @@ public class ActivityPopulator : MonoBehaviour
             GameObject activityClone = Instantiate(activityPrefab);
             GameObject title = activityClone.transform.Find("Title").gameObject;
             TMP_Text titleText = title.GetComponent<TMP_Text>();
-            titleText.text = minigame.name;
+            titleText.text = minigame.GetName();
             activityClone.transform.SetParent(parent.transform, false);
 
             Button button = activityClone.GetComponent<Button>();

@@ -43,6 +43,7 @@ public class DatabaseHandler : MonoBehaviour
                     // Parse and process the data here
                     foreach (DataSnapshot minigameSnapshot in snapshot.Children)
                     {
+                        Debug.LogWarning("Found minigame");
                         // Access individual minigame data using minigameSnapshot
                         string minigameId = minigameSnapshot.Key;
 

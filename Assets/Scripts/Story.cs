@@ -9,9 +9,4 @@ public class Story : Activity
         this.name = name;
         this.description = description;
     }
-
-    public override void OnClick()
-    {
-        Debug.Log($"Clicked '{name}' StoryPane!");
-    }
 }

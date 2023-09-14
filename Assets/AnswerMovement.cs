@@ -13,28 +13,40 @@ public class AnswerMovement : MonoBehaviour
 
     private Vector2 firstStartPostion;
     private Vector2 secondStartPostion;
+    //Canvas canvas = FindObjectOfType<Canvas>();
+    //float width = 0;
+    private Camera camera;
+
 
     void Start()
     {
         firstStartPostion = GameObject.FindWithTag("Answer").transform.position;
-        secondStartPostion = GameObject.FindWithTag("WrongAns").transform.position;
+        //secondStartPostion = GameObject.FindWithTag("WrongAns").transform.position;
+        //width = canvas.GetComponent<RectTransform>().rect.width;
+        camera = Camera.main;
+
     }
 
     private void Update()
     {
-        rbAns.velocity = new Vector2(speed * -150, 0);
+        rbAns.velocity = new Vector2(speed * -150, 0);        
 
-        var ans = GameObject.FindWithTag("Answer").transform.position.x;
-        var wrongAns = GameObject.FindWithTag("WrongAns").transform.position.x;
+        // Get the viewport position of the object
+        Vector3 viewportPosition = camera.WorldToViewportPoint(transform.position);
 
-        if (ans < -502)
+        // Check if the object is off-screen
+        if (viewportPosition.x < 0)
         {
-            transform.position = firstStartPostion;
+            // The object is off-screen, you can perform your off-screen logic here
+            int rand = Random.Range(1, 3);
+            if (rand == 1) {
+                transform.position = firstStartPostion;
+            }
+            if (rand == 2) { 
+                transform.position = secondStartPostion;
+            }
+
         }
-        //if (wrongAns < -502)
-        //{
-        //    transform.position = secondStartPostion;
-        //}
 
     }
 }

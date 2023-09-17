@@ -20,6 +20,8 @@ public class textChange : MonoBehaviour
     public TMP_Text rightAnsText;
     public TMP_Text wrongAnsText;
 
+    public movement circleJumper;
+
     //Timer in seconds - users will get 5 seconds to answer each question
     public float timer = 5f;
 
@@ -42,6 +44,7 @@ public class textChange : MonoBehaviour
         {
             //Access the last question in the array "End"
             Debug.Log("Done");
+            circleJumper.enabled = false;
         }
 
         //Cool boi stuff happens here to change the question when we're within range

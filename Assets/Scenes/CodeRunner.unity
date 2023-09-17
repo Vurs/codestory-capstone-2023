@@ -1212,6 +1212,7 @@ MonoBehaviour:
   questionText: {fileID: 0}
   rightAnsText: {fileID: 0}
   wrongAnsText: {fileID: 0}
+  circleJumper: {fileID: 0}
   timer: 5
   answerPositionHandler: {fileID: 0}
 --- !u!58 &505690325
@@ -1895,6 +1896,7 @@ MonoBehaviour:
   questionText: {fileID: 1189020931}
   rightAnsText: {fileID: 538386079}
   wrongAnsText: {fileID: 1537691861}
+  circleJumper: {fileID: 412255082}
   timer: 5
   answerPositionHandler: {fileID: 132152439}
 --- !u!114 &1189020931

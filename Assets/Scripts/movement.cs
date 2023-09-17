@@ -39,7 +39,6 @@ public class movement : MonoBehaviour
             // Set their velocity aka make them jump
             rb.velocity = new Vector2(0, jumpHeight);
 
-            Debug.Log("Button Clicked!");
         }
     }
 }

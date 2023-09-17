@@ -10,9 +10,9 @@ using UnityEngine.UI;
 public class textChange : MonoBehaviour
 {
     //Questions that we will ask the user
-    string[] questions = { "What do you end a line of code with?", "What do we use to print to a terminal in Java?", "End" };
-    string[] answers = { ";", "System.out.println();", "End" };
-    string[] fakeOuts = { ".", "print();", "End" };
+    string[] questions = { "What do you end a line of code with?", "What do we use to print to a terminal in Java?", "Which of the following is a float?", "Which of the following is an int?", "Which of the following is the assignment operator","End" };
+    string[] answers = { ";", "System.out.println();", "3.5", "404","=","End" };
+    string[] fakeOuts = { ".", "print();", "1", "12.5" , "!=", "End" };
     int questionIndex = 0;
 
     //Accessing the TextMesh component in Unity
@@ -38,7 +38,6 @@ public class textChange : MonoBehaviour
     public void IncrementQuestion()
     {
         //This is pretty much saying if we are at the second last index run this scope.
-        //TODO: Might have to change it to questionIndex-2 or something like that once theres more questions in the array
         if (questionIndex == questions.Length - 1)
         {
             //Access the last question in the array "End"
@@ -46,7 +45,7 @@ public class textChange : MonoBehaviour
         }
 
         //Cool boi stuff happens here to change the question when we're within range
-        else if (questionIndex < 2)
+        else if (questionIndex < questions.Length + 1)
         {
             questionIndex++;
             questionText.text = questions[questionIndex];

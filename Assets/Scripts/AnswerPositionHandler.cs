@@ -36,7 +36,8 @@ public class AnswerPositionHandler : MonoBehaviour
         // Get the viewport position of the object
         Vector3 viewportPositionAns = camera.WorldToViewportPoint(answerRb.transform.position);
 
-        // Check if the object is off-screen
+        /*
+         *         // Check if the object is off-screen
         if (viewportPositionAns.x < 0)
         {
             // Debug.Log("Out of range Answer");
@@ -50,6 +51,7 @@ public class AnswerPositionHandler : MonoBehaviour
             // Debug.Log("Out of range WrongAnswer");
             wrongAnswerOutOfBounds = true;
         }
+        */
 
         // If both answers are out of bounds, start a new question and reset their positions
         if (answerOutOfBounds == true && wrongAnswerOutOfBounds == true)

@@ -1,0 +1,17 @@
+{
+    "m_001": {
+        "Name": "CodeRunner",
+        "Description": "Test your coding knowledge by jumping to pick the right answer!",
+        "ImagePath": ""
+    },
+    "m_002": {
+        "Name": "Family Function",
+        "Description": "It's you versus the clock to see how many similar functions you can let into your super cool party! Remember to keep out the sneaky neighbors pretending to be part of your family!",
+        "ImagePath": ""
+    },
+    "m_003": {
+        "Name": "Inheritance Game",
+        "Description": "How well do you know inheritance? In this fast-paced minigame you'll be given a topic and you need to click the subclasses of that topic before time runs out!",
+        "ImagePath": ""
+    }
+}

@@ -44,7 +44,7 @@ public class DatabaseHandler : MonoBehaviour
 
                         // Handle the minigame data as needed
                         Debug.Log($"Added minigame {nameValue}");
-                        Minigame minigame = new Minigame(nameValue, descriptionValue);
+                        Minigame minigame = new Minigame(nameValue, descriptionValue, Activity.ActivityType.Minigame);
                         minigames.Add(minigame);
                     }
                 }
@@ -102,7 +102,7 @@ public class DatabaseHandler : MonoBehaviour
 
                         // Handle the story data as needed
                         Debug.Log($"Added story {nameValue}");
-                        Story story = new Story(nameValue, descriptionValue);
+                        Story story = new Story(nameValue, descriptionValue, Activity.ActivityType.Story);
                         stories.Add(story);
                     }
                 }

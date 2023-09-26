@@ -6,11 +6,17 @@ public class TransitionToDifferentPage : MonoBehaviour
 {
     public GameObject oldPanel;
     public GameObject newPanel;
+    public GameObject bottomBar;
 
     public void Segue()
     {
         oldPanel.SetActive(false);
         newPanel.SetActive(true);
+
+        if (bottomBar != null)
+        {
+            bottomBar.SetActive(true);
+        }
     }
 
     public void LoadGameStoryView()

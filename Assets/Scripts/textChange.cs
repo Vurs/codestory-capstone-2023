@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 //TODO: somehow centre the text questions in the actual unitiy game
@@ -27,6 +28,8 @@ public class textChange : MonoBehaviour
 
     public AnswerPositionHandler answerPositionHandler;
 
+    public EndActivityHandler endActivityHandler;
+
     private void Start()
     {
         //Setting textmesh to the first question in the array
@@ -45,6 +48,7 @@ public class textChange : MonoBehaviour
             //Access the last question in the array "End"
             Debug.Log("Done");
             circleJumper.enabled = false;
+            endActivityHandler.EndActivity(endActivityHandler.gameObject, RunnerCollision.score * 10, CodeRunnerGameHandler.elapsedTime);
         }
 
         //Cool boi stuff happens here to change the question when we're within range

@@ -8,7 +8,7 @@ public class RunnerCollision : MonoBehaviour
 {
     public textChange textChangeObject;
     public AnswerPositionHandler answerPositionHandler;
-    private int score = 0;
+    public static int score = 0;
     private int lives = 3; 
     public TextMeshProUGUI scoreValue;
 

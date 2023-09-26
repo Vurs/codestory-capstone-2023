@@ -4,24 +4,13 @@ using UnityEngine;
 using Firebase.Database;
 using Firebase.Extensions;
 using System.Threading.Tasks;
+using UnityEngine.UIElements;
+using System;
 
 public class DatabaseHandler : MonoBehaviour
 {
     private static List<Story> stories;
     private static List<Minigame> minigames;
-
-    // DatabaseSingleton dbSingleton;
-
-    // void Start()
-    // {
-    //     dbSingleton = DatabaseSingleton.Instance;
-
-    //     // Initialize Firebase
-    //     if (dbSingleton.IsFirebaseInitialized() == false)
-    //     {
-    //         dbSingleton.InitializeFirebase();
-    //     }
-    // }
 
     public static async Task<List<Minigame>> FetchMinigamesAsync()
     {
@@ -138,5 +127,92 @@ public class DatabaseHandler : MonoBehaviour
     public static List<Story> GetFetchedStories()
     {
         return stories;
+    }
+
+    public UserInfo GetUserInfoById(string userId)
+    {
+        UserInfo userInfo = new UserInfo();
+
+        DatabaseReference rootReference = FirebaseDatabase.DefaultInstance.RootReference;
+        DatabaseReference userReference = rootReference.Child("users").Child(userId);
+
+        userReference.GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                DataSnapshot snapshot = task.Result;
+                if (snapshot.Exists)
+                {
+                    userInfo.DisplayName = snapshot.Child("displayName").Value.ToString();
+                    userInfo.Handle = snapshot.Child("handle").Value.ToString();
+                    userInfo.UserId = userId;
+                    userInfo.ProfilePicture = snapshot.Child("profilePicture").Value.ToString();
+                    userInfo.Title = snapshot.Child("title").Value.ToString();
+                    userInfo.LastSignIn = long.Parse(snapshot.Child("consecutiveDaysLoggedIn").Value.ToString());
+                    userInfo.StoriesRead = int.Parse(snapshot.Child("storiesRead").Value.ToString());
+                    userInfo.GamesPlayed = int.Parse(snapshot.Child("gamesPlayed").Value.ToString());
+                    userInfo.StoryXp = float.Parse(snapshot.Child("storyXp").Value.ToString());
+                    userInfo.GameXp = float.Parse(snapshot.Child("gameXp").Value.ToString());
+                    userInfo.StoryTitlesWon = int.Parse(snapshot.Child("storyTitlesWon").Value.ToString());
+                    userInfo.GameTitlesWon = int.Parse(snapshot.Child("gameTitlesWon").Value.ToString());
+                    userInfo.CountryOfOrigin = snapshot.Child("countryOfOrigin").Value.ToString();
+                    userInfo.Followers = new List<string>();
+                    userInfo.Following = new List<string>();
+
+                    DatabaseReference followersReference = userReference.Child("followers");
+                    followersReference.GetValueAsync().ContinueWithOnMainThread(followersTask =>
+                    {
+                        if (followersTask.IsCompleted)
+                        {
+                            DataSnapshot followersSnapshot = task.Result;
+
+                            if (followersSnapshot.Exists)
+                            {
+                                foreach(var childSnapshot in followersSnapshot.Children)
+                                {
+                                    string followerUid = childSnapshot.Value.ToString();
+                                    userInfo.Followers.Add(followerUid);
+                                }
+                            } else
+                            {
+                                Debug.LogWarning("Followers list is empty.");
+                            }
+                        } else
+                        {
+                            Debug.LogError("Error fetching followers list: " + followersTask.Exception);
+                        }
+                    });
+
+                    DatabaseReference followingReference = userReference.Child("following");
+                    followingReference.GetValueAsync().ContinueWithOnMainThread(followingTask =>
+                    {
+                        if (followingTask.IsCompleted)
+                        {
+                            DataSnapshot followingSnapshot = task.Result;
+
+                            if (followingSnapshot.Exists)
+                            {
+                                foreach (var childSnapshot in followingSnapshot.Children)
+                                {
+                                    string followingUid = childSnapshot.Value.ToString();
+                                    userInfo.Following.Add(followingUid);
+                                }
+                            } else
+                            {
+                                Debug.LogWarning("Following list is empty.");
+                            }
+                        } else
+                        {
+                            Debug.LogError("Error fetching following list: " + followingTask.Exception);
+                        }
+                    });
+                } else
+                {
+                    Debug.LogWarning("User could not be found.");
+                }
+            }
+        });
+
+        return userInfo;
     }
 }

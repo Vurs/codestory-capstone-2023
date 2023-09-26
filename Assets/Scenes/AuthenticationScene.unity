@@ -383,6 +383,7 @@ MonoBehaviour:
   warningRegisterText: {fileID: 8470192491183890428}
   registerUI: {fileID: 5341202334616379500}
   loginUI: {fileID: 4239803003620930855}
+  apiUrl: http://ip-api.com/json
 --- !u!4 &677935475
 Transform:
   m_ObjectHideFlags: 0

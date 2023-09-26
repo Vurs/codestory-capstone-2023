@@ -3,8 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
+using Firebase.Database;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System;
+using System.Net;
+using Newtonsoft.Json.Linq;
+using Firebase.Extensions;
+using UnityEngine.Networking;
 
 public class AuthManager : MonoBehaviour
 {
@@ -13,6 +19,7 @@ public class AuthManager : MonoBehaviour
     public DependencyStatus dependencyStatus;
     public FirebaseAuth auth;
     public FirebaseUser user;
+    public DatabaseReference rootReference;
 
     // Login variables
     [Header("Login")]
@@ -33,6 +40,11 @@ public class AuthManager : MonoBehaviour
     [Header("UI")]
     public GameObject registerUI;
     public GameObject loginUI;
+
+    // API variables
+    [Header("API")]
+    public string ipApiUrl = "http://ip-api.com/json";
+    public string flagApiUrl = "https://flagsapi.com/BE/flat/64.png";
 
     private void Awake()
     {
@@ -56,6 +68,7 @@ public class AuthManager : MonoBehaviour
         Debug.Log("Setting up Firebase Auth");
         auth = FirebaseAuth.DefaultInstance;
         auth.StateChanged += AuthStateChanged;
+        rootReference = FirebaseDatabase.DefaultInstance.RootReference;
         AuthStateChanged(this, null);
     }
 
@@ -145,6 +158,22 @@ public class AuthManager : MonoBehaviour
                 Debug.Log($"User signed in successfully: {user.DisplayName}, {user.Email}");
                 warningLoginText.text = "";
                 confirmLoginText.text = $"Signed in as {user.DisplayName} ({user.Email})!";
+
+                DateTime currentTime = DateTime.UtcNow;
+                DateTimeOffset currentDateTimeOffset = new DateTimeOffset(currentTime);
+                long unixTimestampMillis = currentDateTimeOffset.ToUnixTimeMilliseconds();
+                rootReference.Child("users").Child(user.UserId).Child("lastSignIn").SetValueAsync(unixTimestampMillis).ContinueWithOnMainThread(task =>
+                {
+                    if (task.IsCompleted)
+                    {
+                        Debug.Log("Last sign-in timestamp updated in the database.");
+                    }
+                    else
+                    {
+                        Debug.LogError("Error updating last sign-in timestamp: " + task.Exception);
+                    }
+                });
+
                 SceneManager.LoadSceneAsync("HomeScene");
             }
         }
@@ -221,36 +250,92 @@ public class AuthManager : MonoBehaviour
                     }
                     else
                     {
-                        // Username is now set, return to login screen
-                        registerUI.SetActive(false);
-                        loginUI.SetActive(true);
+                        DateTime currentTime = DateTime.UtcNow;
+                        DateTimeOffset currentDateTimeOffset = new DateTimeOffset(currentTime);
+                        long unixTimestampMillis = currentDateTimeOffset.ToUnixTimeMilliseconds();
 
-                        emailLoginField.text = "";
-                        passwordLoginField.text = "";
-                        warningLoginText.text = "";
-                        confirmLoginText.text = "Account has been created, please verify your email before signing in!";
+                        string countryCode = "N/A";
 
-                        usernameRegisterField.text = "";
-                        emailRegisterField.text = "";
-                        passwordRegisterField.text = "";
-                        passwordRegisterVerifyField.text = "";
-                        warningRegisterText.text = "";
-
-                        // Send a confirmation email
-                        user.SendEmailVerificationAsync().ContinueWith(task =>
+                        string url = ipApiUrl;
+                        using (UnityWebRequest www = UnityWebRequest.Get(url))
                         {
-                            if (task.IsCanceled)
-                            {
-                                Debug.LogError("SendEmailVerificationAsync was canceled.");
-                                return;
-                            }
-                            if (task.IsFaulted)
-                            {
-                                Debug.LogError("SendEmailVerificationAsync encountered an error: " + task.Exception);
-                                return;
-                            }
+                            yield return www.SendWebRequest();
 
-                            Debug.Log("Email sent successfully.");
+                            if (www.result == UnityWebRequest.Result.Success)
+                            {
+                                JObject jsonResponse = JObject.Parse(www.downloadHandler.text);
+                                countryCode = (string)jsonResponse["countryCode"];
+                            } else
+                            {
+                                Debug.LogError("Error fetching GeoIP data: " + www.error);
+                            }
+                        }
+
+                        Dictionary<string, object> userData = new Dictionary<string, object>
+                        {
+                            { "userId", user.UserId },
+                            { "displayName", user.DisplayName },
+                            { "handle", user.DisplayName },
+                            { "profilePicture", "undefined" },
+                            { "title", "Beginner" },
+                            { "lastSignIn",  unixTimestampMillis},
+                            { "storiesRead", 0 },
+                            { "gamesPlayed", 0 },
+                            { "storyXp", 0.0f },
+                            { "gameXp", 0.0f },
+                            { "storyTitlesWon", 0 },
+                            { "gameTitlesWon", 0 },
+                            { "countryOfOrigin", countryCode }
+                        };
+                        rootReference.Child("users").Child(user.UserId).SetValueAsync(userData).ContinueWithOnMainThread(task =>
+                        {
+                            if (task.IsCompleted)
+                            {
+                                // Username is now set, return to login screen
+                                registerUI.SetActive(false);
+                                loginUI.SetActive(true);
+
+                                emailLoginField.text = "";
+                                passwordLoginField.text = "";
+                                warningLoginText.text = "";
+                                confirmLoginText.text = "Account has been created, please verify your email before signing in!";
+
+                                usernameRegisterField.text = "";
+                                emailRegisterField.text = "";
+                                passwordRegisterField.text = "";
+                                passwordRegisterVerifyField.text = "";
+                                warningRegisterText.text = "";
+
+                                // Send a confirmation email
+                                user.SendEmailVerificationAsync().ContinueWith(task =>
+                                {
+                                    if (task.IsCanceled)
+                                    {
+                                        Debug.LogError("SendEmailVerificationAsync was canceled.");
+                                        return;
+                                    }
+                                    if (task.IsFaulted)
+                                    {
+                                        Debug.LogError("SendEmailVerificationAsync encountered an error: " + task.Exception);
+                                        return;
+                                    }
+
+                                    Debug.Log("Email sent successfully.");
+                                });
+                            } else
+                            {
+                                warningRegisterText.text = "Error creating account, please try again";
+                                user.DeleteAsync().ContinueWithOnMainThread(task =>
+                                {
+                                    if (task.IsCompleted)
+                                    {
+                                        Debug.Log("User account successfully deleted.");
+                                    } else
+                                    {
+                                        Debug.LogError("Error deleting user account: " + task.Exception);
+                                    }
+                                });
+                            }
                         });
                     }
                 }

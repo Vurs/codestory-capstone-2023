@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
+using Firebase.Database;
 using UnityEngine.SceneManagement;
+using Firebase.Extensions;
+using System;
 
 public class LaunchHandler : MonoBehaviour
 {
     private DependencyStatus dependencyStatus;
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private DatabaseReference rootReference;
 
     public float loadTime = 5f;
 
@@ -37,6 +41,7 @@ public class LaunchHandler : MonoBehaviour
         Debug.Log("Setting up Firebase Auth");
         auth = FirebaseAuth.DefaultInstance;
         auth.StateChanged += AuthStateChanged;
+        rootReference = FirebaseDatabase.DefaultInstance.RootReference;
         AuthStateChanged(this, null);
     }
 
@@ -54,6 +59,21 @@ public class LaunchHandler : MonoBehaviour
             if (signedIn)
             {
                 Debug.Log("Signed in " + user.UserId);
+
+                DateTime currentTime = DateTime.UtcNow;
+                DateTimeOffset currentDateTimeOffset = new DateTimeOffset(currentTime);
+                long unixTimestampMillis = currentDateTimeOffset.ToUnixTimeMilliseconds();
+                rootReference.Child("users").Child(user.UserId).Child("lastSignIn").SetValueAsync(unixTimestampMillis).ContinueWithOnMainThread(task =>
+                {
+                    if (task.IsCompleted)
+                    {
+                        Debug.Log("Last sign-in timestamp updated in the database.");
+                    }
+                    else
+                    {
+                        Debug.LogError("Error updating last sign-in timestamp: " + task.Exception);
+                    }
+                });
             }
         }
     }

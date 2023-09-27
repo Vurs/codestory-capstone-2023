@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class ScriptChanger : MonoBehaviour
 {
     public Button nextButton;
+    public Button backButton;
     public TextMeshProUGUI dialogBox;
     public Image npcImage;
 
@@ -21,11 +23,23 @@ public class ScriptChanger : MonoBehaviour
     void Start()
     {
        
-        nextButton.onClick.AddListener(ClickedButton);
+        nextButton.onClick.AddListener(ClickedNextButton);
+        backButton.onClick.AddListener(ClickedBackButton);
+        backButton.interactable = false;
+
         dialogBox.text = script[0]; 
     }
 
-    void ClickedButton() {
+    private void ClickedBackButton()
+    {
+        Debug.Log("Back Button clicked");
+    }
+
+    void ClickedNextButton() {
+
+        if (textPosition >= 1) {
+            backButton.interactable = true;
+        }
 
         if (textPosition == 8) {
             Debug.Log("Here");
@@ -50,6 +64,8 @@ public class ScriptChanger : MonoBehaviour
             textPosition++;
         }
     }
+
+    
 
     // Update is called once per frame
     void Update()

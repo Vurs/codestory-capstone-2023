@@ -695,6 +695,45 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157339956}
   m_CullTransparentMesh: 1
+--- !u!21 &277332391
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UI/RoundedCorners/RoundedCorners
+  m_Shader: {fileID: 4800000, guid: 0bd2ec5d73751e34a814274a454bec41, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _WidthHeightRadius: {r: 963.7611, g: 132.62134, b: 60, a: 0}
+  m_BuildTextureStacks: []
 --- !u!1 &321051989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1027,6 +1066,7 @@ GameObject:
   - component: {fileID: 548991584}
   - component: {fileID: 548991583}
   - component: {fileID: 548991582}
+  - component: {fileID: 548991585}
   m_Layer: 5
   m_Name: BackArrow
   m_TagString: Untagged
@@ -1096,7 +1136,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 548991583}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
 --- !u!114 &548991583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1135,6 +1187,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 548991580}
   m_CullTransparentMesh: 1
+--- !u!114 &548991585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548991580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f82b2dad8bfece4290854b21881a847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextButton: {fileID: 1399177535}
+  backButton: {fileID: 548991582}
+  dialogBox: {fileID: 2003140475}
+  npcImage: {fileID: 55227030}
+  dialogAnimator: {fileID: 2125917954}
+  answerAnimator: {fileID: 612856528}
 --- !u!1 &612856524
 GameObject:
   m_ObjectHideFlags: 0
@@ -1836,45 +1906,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 662841886}
   m_CullTransparentMesh: 1
---- !u!21 &693144650
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: UI/RoundedCorners/RoundedCorners
-  m_Shader: {fileID: 4800000, guid: 0bd2ec5d73751e34a814274a454bec41, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _UseUIAlphaClip: 0
-    m_Colors:
-    - _WidthHeightRadius: {r: 963.7611, g: 215.19983, b: 60, a: 0}
-  m_BuildTextureStacks: []
 --- !u!1 &753445068
 GameObject:
   m_ObjectHideFlags: 0
@@ -2129,7 +2160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 693144650}
+  m_Material: {fileID: 277332391}
   m_Color: {r: 0.6039216, g: 0.6039216, b: 0.6039216, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -2518,7 +2549,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.040000003, y: 0.14867115}
   m_AnchorMax: {x: 0.6494888, y: 0.5}
-  m_AnchoredPosition: {x: 0.458313, y: -0.11979675}
+  m_AnchoredPosition: {x: 0.45837402, y: -0.11979675}
   m_SizeDelta: {x: 0.916626, y: 0.23949814}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1108402556
@@ -3521,7 +3552,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.040000003, y: 0.5396577}
   m_AnchorMax: {x: 0.6494888, y: 0.82865775}
-  m_AnchoredPosition: {x: 1.458313, y: 0.5}
+  m_AnchoredPosition: {x: 1.458374, y: 0.5}
   m_SizeDelta: {x: 0.916626, y: -1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1311852035
@@ -4096,6 +4127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextButton: {fileID: 1399177535}
+  backButton: {fileID: 548991582}
   dialogBox: {fileID: 2003140475}
   npcImage: {fileID: 55227030}
   dialogAnimator: {fileID: 2125917954}

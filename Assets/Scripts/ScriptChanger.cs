@@ -10,6 +10,8 @@ public class ScriptChanger : MonoBehaviour
     public TextMeshProUGUI dialogBox;
     public Image npcImage;
 
+    public Animator dialogAnimator;
+    public Animator answerAnimator;
 
     private int textPosition = 1;
 
@@ -27,6 +29,8 @@ public class ScriptChanger : MonoBehaviour
 
         if (textPosition == 8) {
             Debug.Log("Here");
+            dialogAnimator.SetBool("ShowAnswer", true);
+            answerAnimator.SetBool("ShowAnswer", true);
         }
 
         if (textPosition == 6) {

@@ -30,7 +30,7 @@ public class ScriptChanger : MonoBehaviour
         dialogBox.text = script[0]; 
     }
 
-    private void ClickedBackButton()
+    void ClickedBackButton()
     {
         Debug.Log("Back Button clicked");
     }

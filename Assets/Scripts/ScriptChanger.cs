@@ -15,7 +15,7 @@ public class ScriptChanger : MonoBehaviour
     public Animator dialogAnimator;
     public Animator answerAnimator;
 
-    private int textPosition = 1;
+    private int textPosition = 0;
 
     string[] script = { "Good morning agent, at precisely o hundred hours today, the US president was kidnapped by traitor agents.", "We received intel that Doctor Exception is the mastermind behind the recent kidnapping of the president", "and has left a series of cryptic coding questions behind.", "We believe once these questions are solved, it will lead us to the location of the president.", "As our best agent, we need you to rescue the president and bring Doctor Exception and his agents to justice.", "Good luck agent over and out.", "Greetings Agent, my name is Doctor Method and I am the lead scientist of the OOP agency", "I've been tasked with helping you through these puzzles to save the president from that vile Doctor Exception.", "Ahh that tricky Doctor Exception, this line of code is creating what's known as a variable", "Variables allow us to assign numeric or String values into a placeholder using the assignment (=) operator", "This placeholder is known as a variable and can be whatever name you want it to be", "We can then use that variable throughout the program. But a very important part is missing. Primitive Data Types.", "Primitive Data Types allow us to specify what data type a variable will hold in Java and go before the variable name", "The major data types are int which hold whole numbers, double for decimal numbers, and String for strings or words/sentences", "Note String needs to be written with a capital s.", "An example of creating a variable will be as follows: int num = 10;" };
 
@@ -27,27 +27,45 @@ public class ScriptChanger : MonoBehaviour
         backButton.onClick.AddListener(ClickedBackButton);
         backButton.interactable = false;
 
-        dialogBox.text = script[0]; 
+        dialogBox.text = script[textPosition];
+        Debug.Log(textPosition);
     }
 
     void ClickedBackButton()
     {
-        Debug.Log("Back Button clicked");
+        if (textPosition > 0)
+        {
+            textPosition--;
+            dialogBox.text = script[textPosition];
+        }
+
+        if (textPosition == 0) {
+            backButton.interactable = false;
+        }
+
+        if (textPosition == 5) {
+            npcImage.color = Color.white;
+        }
+
+        if (textPosition == 7) {
+            dialogAnimator.SetBool("ShowAnswer", false);
+            answerAnimator.SetBool("ShowAnswer", false);
+        }
     }
 
     void ClickedNextButton() {
 
-        if (textPosition >= 1) {
+        if (textPosition == 0) {
             backButton.interactable = true;
         }
 
-        if (textPosition == 8) {
+        if (textPosition == 7) {
             Debug.Log("Here");
             dialogAnimator.SetBool("ShowAnswer", true);
             answerAnimator.SetBool("ShowAnswer", true);
         }
 
-        if (textPosition == 6) {
+        if (textPosition == 5) {
             npcImage.color = Color.red;
         }
 
@@ -60,8 +78,10 @@ public class ScriptChanger : MonoBehaviour
         else
         {
             //Debug.Log("Button Clicked");
-            dialogBox.text = script[textPosition];
+            Debug.Log("Else TextPosition 1: " + textPosition);
             textPosition++;
+            dialogBox.text = script[textPosition];
+            Debug.Log(" ElseTextPosition 2: " + textPosition);
         }
     }
 

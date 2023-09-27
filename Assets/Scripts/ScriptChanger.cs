@@ -37,6 +37,7 @@ public class ScriptChanger : MonoBehaviour
         {
             textPosition--;
             dialogBox.text = script[textPosition];
+            nextButton.interactable = true;
         }
 
         if (textPosition == 0) {
@@ -69,11 +70,11 @@ public class ScriptChanger : MonoBehaviour
             npcImage.color = Color.red;
         }
 
-        if (textPosition == script.Length)
+        if (textPosition == script.Length - 1)
         {
-            Debug.Log("End");
-            nextButton.interactable = false;
-            return;
+            //Debug.Log("End");
+            //nextButton.interactable = false;
+            //return;
         }
         else
         {
@@ -82,6 +83,13 @@ public class ScriptChanger : MonoBehaviour
             textPosition++;
             dialogBox.text = script[textPosition];
             Debug.Log(" ElseTextPosition 2: " + textPosition);
+
+            if (textPosition == script.Length - 1)
+            {
+                Debug.Log("End");
+                nextButton.interactable = false;
+                return;
+            }
         }
     }
 

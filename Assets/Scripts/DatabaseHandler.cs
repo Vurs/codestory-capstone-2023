@@ -12,6 +12,8 @@ public class DatabaseHandler : MonoBehaviour
     private static List<Story> stories;
     private static List<Minigame> minigames;
 
+    private static UserInfo userInfo;
+
     public static async Task<List<Minigame>> FetchMinigamesAsync()
     {
         minigames = new List<Minigame>();
@@ -129,14 +131,16 @@ public class DatabaseHandler : MonoBehaviour
         return stories;
     }
 
-    public UserInfo GetUserInfoById(string userId)
+    public static async Task<UserInfo> FetchUserInfoByIdAsync(string userId)
     {
-        UserInfo userInfo = new UserInfo();
+        userInfo = new UserInfo();
 
         DatabaseReference rootReference = FirebaseDatabase.DefaultInstance.RootReference;
         DatabaseReference userReference = rootReference.Child("users").Child(userId);
 
-        userReference.GetValueAsync().ContinueWithOnMainThread(task =>
+        TaskCompletionSource<UserInfo> tcs = new TaskCompletionSource<UserInfo>();
+
+        await userReference.GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)
             {
@@ -211,8 +215,15 @@ public class DatabaseHandler : MonoBehaviour
                     Debug.LogWarning("User could not be found.");
                 }
             }
+
+            tcs.SetResult(userInfo);
         });
 
+        return await tcs.Task;
+    }
+
+    public static UserInfo GetFetchedUserInfo()
+    {
         return userInfo;
     }
 }

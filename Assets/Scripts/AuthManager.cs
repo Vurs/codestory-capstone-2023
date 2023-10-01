@@ -44,7 +44,6 @@ public class AuthManager : MonoBehaviour
     // API variables
     [Header("API")]
     public string ipApiUrl = "http://ip-api.com/json";
-    public string flagApiUrl = "https://flagsapi.com/BE/flat/64.png";
 
     private void Awake()
     {
@@ -151,6 +150,7 @@ public class AuthManager : MonoBehaviour
             {
                 warningLoginText.text = "Please verify your email before signing in";
                 confirmLoginText.text = "";
+                auth.SignOut();
             }
             else
             {
@@ -255,6 +255,7 @@ public class AuthManager : MonoBehaviour
                         long unixTimestampMillis = currentDateTimeOffset.ToUnixTimeMilliseconds();
 
                         string countryCode = "N/A";
+                        string countryName = "N/A";
 
                         string url = ipApiUrl;
                         using (UnityWebRequest www = UnityWebRequest.Get(url))
@@ -265,6 +266,7 @@ public class AuthManager : MonoBehaviour
                             {
                                 JObject jsonResponse = JObject.Parse(www.downloadHandler.text);
                                 countryCode = (string)jsonResponse["countryCode"];
+                                countryName = (string)jsonResponse["country"];
                             } else
                             {
                                 Debug.LogError("Error fetching GeoIP data: " + www.error);
@@ -285,7 +287,8 @@ public class AuthManager : MonoBehaviour
                             { "gameXp", 0.0f },
                             { "storyTitlesWon", 0 },
                             { "gameTitlesWon", 0 },
-                            { "countryOfOrigin", countryCode }
+                            { "countryCode", countryCode },
+                            { "countryName", countryName }
                         };
                         rootReference.Child("users").Child(user.UserId).SetValueAsync(userData).ContinueWithOnMainThread(task =>
                         {
@@ -321,6 +324,8 @@ public class AuthManager : MonoBehaviour
                                     }
 
                                     Debug.Log("Email sent successfully.");
+
+                                    auth.SignOut();
                                 });
                             } else
                             {

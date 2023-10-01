@@ -57,7 +57,7 @@ public class ProfilePopulator : MonoBehaviour
         // Map all the info to the corresponding text labels
         greetingLabelHome.text = $"Hello, {userInfo.DisplayName}!";
         handleLabelHome.text = $"@{userInfo.Handle}";
-        followingFollowersLabelHome.text = $"<b>{(userInfo.Following != null ? userInfo.Following.Count : 0)}</b> Following   <b>{(userInfo.Followers != null ? userInfo.Followers.Count : 0)}</b> Followers";
+        followingFollowersLabelHome.text = $"<b>{userInfo.Following.Count}</b> Following   <b>{userInfo.Followers.Count}</b> Followers";
         dailyStreakLabelHome.text = "0"; // Change this later
         totalXpLabelHome.text = (userInfo.StoryXp + userInfo.GameXp).ToString();
         totalTitlesLabelHome.text = (userInfo.StoryTitlesWon + userInfo.GameTitlesWon).ToString();
@@ -66,10 +66,11 @@ public class ProfilePopulator : MonoBehaviour
         displayNameLabelProfile.text = userInfo.DisplayName;
         handleLabelProfile.text = $"@{userInfo.Handle}";
         titleLabelProfile.text = userInfo.Title;
-        countryLabelProfile.text = userInfo.CountryOfOrigin;
-        countryImageProfile.sprite = defaultProfilePicture; // Change this later
+        countryLabelProfile.text = userInfo.CountryName;
+        //countryImageProfile.sprite = defaultProfilePicture; // Change this later
+        StartCoroutine(Utils.LoadFlagImageCoroutine(countryImageProfile, userInfo.CountryCode));
         lastActiveLabelProfile.text = "Last Active: Just now"; // Change this later
-        followingFollowersLabelProfile.text = $"<b>{(userInfo.Following != null ? userInfo.Following.Count : 0)}</b> Following   <b>{(userInfo.Followers != null ? userInfo.Followers.Count : 0)}</b> Followers";
+        followingFollowersLabelProfile.text = $"<b>{userInfo.Following.Count}</b> Following   <b>{userInfo.Followers.Count}</b> Followers";
         dailyStreakLabelProfile.text = "0"; // Change this later
         totalXpLabelProfile.text = (userInfo.StoryXp + userInfo.GameXp).ToString();
         totalTitlesLabelProfile.text = (userInfo.StoryTitlesWon + userInfo.GameTitlesWon).ToString();

@@ -18,5 +18,6 @@ public class UserInfo
     public float GameXp { get; set; }
     public int StoryTitlesWon { get; set; }
     public int GameTitlesWon { get; set; }
-    public string CountryOfOrigin { get; set; }
+    public string CountryCode { get; set; }
+    public string CountryName { get; set; }
 }

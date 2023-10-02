@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class textChange : MonoBehaviour
 {
     //Questions that we will ask the user
-    string[] questions = { "What do you end a line of code with?", "Use to print to a terminal?", "Which of the following is a float?", "Which of the following is an int?", "Which is the assignment operator?", "Used to declare text variables?", "Used to declare constant variables?", "Used to store a single character", "Default value of an uninitialized integer variable?", "How do you write a single-line comment?", "Used to declare an array of integers?", "Used to read user input from the console?", "Which of these methods returns a value?", "How do you use an external library in your Java program?", "End" };
+    string[] questions = { "What do you end a line of code with?", "Use to print to a terminal?", "Which of the following is a double?", "Which of the following is an int?", "Which is the assignment operator?", "Used to declare text variables?", "Used to declare constant variables?", "Used to store a single character", "Default value of an uninitialized integer variable?", "How do you write a single-line comment?", "Used to declare an array of integers?", "Used to read user input from the console?", "Which of these methods returns a value?", "How do you use an external library in your Java program?", "End" };
     string[] answers = { ";", "System.out.println();", "3.5", "404", "=", "String", "final", "char", "0", "//", "int[]", "Scanner(System.in)", "public String method()", "import", "End" };
     string[] fakeOuts = { ".", "print();", "1", "12.5", "!=", "char[]", "const", "string", "-1", "--", "List<int>", "Console.ReadLine()", "public void method()", "using", "End" };
     int questionIndex = 0;

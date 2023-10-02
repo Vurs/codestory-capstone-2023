@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TransitionToDifferentPage : MonoBehaviour
 {
     public GameObject oldPanel;
     public GameObject newPanel;
     public GameObject bottomBar;
+    public GameObject newSelectedTab;
+    public GameObject[] allTabs;
 
     public void Segue()
     {
@@ -19,9 +22,15 @@ public class TransitionToDifferentPage : MonoBehaviour
         }
     }
 
-    public void LoadGameStoryView()
+    public void ChangeTabColors()
     {
-        // In the future we can use the game's ID to fetch its information from the Firebase DB and populate the text labels accordingly
-        Segue();
+        foreach (GameObject tab in allTabs)
+        {
+            Image tabImage = tab.GetComponent<Image>();
+            tabImage.color = Utils.TabColors["GRAY"];
+        }
+
+        Image newSelectedTabImage = newSelectedTab.GetComponent<Image>();
+        newSelectedTabImage.color = Utils.TabColors["BLUE"];
     }
 }

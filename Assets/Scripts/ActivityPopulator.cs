@@ -57,7 +57,7 @@ public class ActivityPopulator : MonoBehaviour
 
         stories = DatabaseHandler.GetFetchedStories();
 
-        Debug.Log($"Successfully loaded {stories.Count} Stories");
+        //Debug.Log($"Successfully loaded {stories.Count} Stories");
 
         callback.Invoke();
     }
@@ -71,7 +71,7 @@ public class ActivityPopulator : MonoBehaviour
 
         minigames = DatabaseHandler.GetFetchedMinigames();
 
-        Debug.Log($"Successfully loaded {minigames.Count} Minigames");
+        //Debug.Log($"Successfully loaded {minigames.Count} Minigames");
 
         callback.Invoke();
     }

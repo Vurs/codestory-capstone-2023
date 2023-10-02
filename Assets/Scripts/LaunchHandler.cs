@@ -48,35 +48,83 @@ public class LaunchHandler : MonoBehaviour
     // Track state changes of the auth object.
     private void AuthStateChanged(object sender, System.EventArgs eventArgs)
     {
-        if (auth.CurrentUser != user)
+        try
         {
-            bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
-            if (!signedIn && user != null)
+            if (auth.CurrentUser != null && user != auth.CurrentUser)
             {
-                Debug.Log("Signed out " + user.UserId);
-            }
-            user = auth.CurrentUser;
-            if (signedIn)
-            {
-                Debug.Log("Signed in " + user.UserId);
-
-                DateTime currentTime = DateTime.UtcNow;
-                DateTimeOffset currentDateTimeOffset = new DateTimeOffset(currentTime);
-                long unixTimestampMillis = currentDateTimeOffset.ToUnixTimeMilliseconds();
-                rootReference.Child("users").Child(user.UserId).Child("lastSignIn").SetValueAsync(unixTimestampMillis).ContinueWithOnMainThread(task =>
+                bool signedIn = user != null && auth.CurrentUser != null;
+                if (!signedIn && user != null)
                 {
-                    if (task.IsCompleted)
+                    Debug.Log("Signed out " + user.UserId);
+                }
+                user = auth.CurrentUser;
+                if (signedIn)
+                {
+                    Debug.Log("Signed in " + user.UserId);
+
+                    DateTime currentTime = DateTime.UtcNow;
+                    DateTimeOffset currentDateTimeOffset = new DateTimeOffset(currentTime);
+                    long unixTimestampMillis = currentDateTimeOffset.ToUnixTimeMilliseconds();
+
+                    var userReference = rootReference.Child("users").Child(user.UserId);
+                    if (userReference != null)
                     {
-                        Debug.Log("Last sign-in timestamp updated in the database.");
+                        var lastSignInReference = userReference.Child("lastSignIn");
+                        if (lastSignInReference != null)
+                        {
+                            lastSignInReference.SetValueAsync(unixTimestampMillis).ContinueWithOnMainThread(task =>
+                            {
+                                if (task.IsCompleted)
+                                {
+                                    Debug.Log("Last sign-in timestamp updated in the database.");
+                                }
+                                else
+                                {
+                                    Debug.LogError("Error updating last sign-in timestamp: " + task.Exception);
+                                }
+                            });
+                        }
                     }
-                    else
-                    {
-                        Debug.LogError("Error updating last sign-in timestamp: " + task.Exception);
-                    }
-                });
+                }
             }
         }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error in AuthStateChanged: " + ex.Message);
+        }
     }
+
+    //private void AuthStateChanged(object sender, System.EventArgs eventArgs)
+    //{
+    //    if (auth.CurrentUser != user)
+    //    {
+    //        bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
+    //        if (!signedIn && user != null)
+    //        {
+    //            Debug.Log("Signed out " + user.UserId);
+    //        }
+    //        user = auth.CurrentUser;
+    //        if (signedIn)
+    //        {
+    //            Debug.Log("Signed in " + user.UserId);
+
+    //            DateTime currentTime = DateTime.UtcNow;
+    //            DateTimeOffset currentDateTimeOffset = new DateTimeOffset(currentTime);
+    //            long unixTimestampMillis = currentDateTimeOffset.ToUnixTimeMilliseconds();
+    //            rootReference.Child("users").Child(user.UserId).Child("lastSignIn").SetValueAsync(unixTimestampMillis).ContinueWithOnMainThread(task =>
+    //            {
+    //                if (task.IsCompleted)
+    //                {
+    //                    Debug.Log("Last sign-in timestamp updated in the database.");
+    //                }
+    //                else
+    //                {
+    //                    Debug.LogError("Error updating last sign-in timestamp: " + task.Exception);
+    //                }
+    //            });
+    //        }
+    //    }
+    //}
 
     private void OnDestroy()
     {

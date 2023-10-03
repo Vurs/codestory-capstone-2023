@@ -1,44 +1,27 @@
 {
   "project_info": {
-    "project_number": "807428922822",
-    "firebase_url": "https://capstone-coding-teacher-default-rtdb.firebaseio.com",
-    "project_id": "capstone-coding-teacher",
-    "storage_bucket": "capstone-coding-teacher.appspot.com"
+    "project_number": "395611146593",
+    "firebase_url": "https://codestory-57a27-default-rtdb.firebaseio.com",
+    "project_id": "codestory-57a27",
+    "storage_bucket": "codestory-57a27.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:807428922822:android:606f9806de37e3781926c7",
+        "mobilesdk_app_id": "1:395611146593:android:4d46fff59c7670feaf9d20",
         "android_client_info": {
-          "package_name": "com.capstone.codingteacher"
+          "package_name": "com.codestory.codestory"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "807428922822-u4i44sjdejdd1natg41pth3bdhgnm9vs.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAgIYFrS7MJhg035KlTT-zsBHfWdCf16uM"
+          "current_key": "AIzaSyDlzFTCMmDBaCk3qnKj-WZDjFUvkcV0xiE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "807428922822-u4i44sjdejdd1natg41pth3bdhgnm9vs.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "807428922822-0idkj0u1dbvj5ukgj8vnoc6k6elu9lal.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.capstone.codingteacher"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

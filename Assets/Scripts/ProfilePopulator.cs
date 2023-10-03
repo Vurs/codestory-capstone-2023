@@ -8,7 +8,6 @@ using Firebase;
 using Firebase.Database;
 using Firebase.Auth;
 using System.Threading.Tasks;
-using UnityEditor.Animations;
 
 public class ProfilePopulator : MonoBehaviour
 {

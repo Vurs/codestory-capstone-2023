@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -52,5 +53,48 @@ public class Utils : MonoBehaviour
             children.Add(child.gameObject);
 
         children.ForEach(child => Destroy(child));
+    }
+
+    public static string ConvertNumberToShorthand(int number)
+    {
+        string[] suffixes = { "K", "M", "B", "T" };
+
+        int index = 0;
+        double num = (double)number;
+
+        // Keep dividing the number by 1000 and moving to the next suffix until it's less than 1000
+        while (num >= 1000 && index < suffixes.Length - 1)
+        {
+            num /= 1000;
+            index++;
+        }
+
+        // Format the number with the appropriate suffix and decimal place
+        string result = num.ToString("0.0") + suffixes[index];
+        return result;
+    }
+
+    public static string ConvertNumberToShorthand(float number)
+    {
+        string[] suffixes = { "K", "M", "B", "T" };
+
+        int index = 0;
+        double num = (double)number;
+
+        // Keep dividing the number by 1000 and moving to the next suffix until it's less than 1000
+        while (num >= 1000 && index < suffixes.Length - 1)
+        {
+            num /= 1000;
+            index++;
+        }
+
+        // Format the number with the appropriate suffix and decimal place
+        string result = num.ToString("0.0") + suffixes[index];
+        return result;
+    }
+
+    public static string FormatWithCommas(int input)
+    {
+        return input.ToString("N0");
     }
 }

@@ -81,10 +81,10 @@ public class ProfilePopulator : MonoBehaviour
         // Map all the info to the corresponding text labels
         greetingLabelHome.text = $"Hello, {userInfo.DisplayName}!";
         handleLabelHome.text = $"@{userInfo.Handle}";
-        followingFollowersLabelHome.text = $"<b>{userInfo.Following.Count}</b> Following   <b>{userInfo.Followers.Count}</b> Followers";
+        followingFollowersLabelHome.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
         dailyStreakLabelHome.text = "0"; // Change this later
-        totalXpLabelHome.text = (userInfo.StoryXp + userInfo.GameXp).ToString();
-        totalTitlesLabelHome.text = (userInfo.StoryTitlesWon + userInfo.GameTitlesWon).ToString();
+        totalXpLabelHome.text = Utils.ConvertNumberToShorthand(userInfo.StoryXp + userInfo.GameXp);
+        totalTitlesLabelHome.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
         profilePictureHome.sprite = defaultProfilePicture;
     }
 
@@ -97,16 +97,16 @@ public class ProfilePopulator : MonoBehaviour
         //countryImageProfile.sprite = defaultProfilePicture; // Change this later
         StartCoroutine(Utils.LoadFlagImageCoroutine(countryImageProfile, userInfo.CountryCode));
         lastActiveLabelProfile.text = "Last Active: Just now"; // Change this later
-        followingFollowersLabelProfile.text = $"<b>{userInfo.Following.Count}</b> Following   <b>{userInfo.Followers.Count}</b> Followers";
+        followingFollowersLabelProfile.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
         dailyStreakLabelProfile.text = "0"; // Change this later
-        totalXpLabelProfile.text = (userInfo.StoryXp + userInfo.GameXp).ToString();
-        totalTitlesLabelProfile.text = (userInfo.StoryTitlesWon + userInfo.GameTitlesWon).ToString();
-        storiesReadLabelProfile.text = userInfo.StoriesRead.ToString();
-        storyXpLabelProfile.text = userInfo.StoryXp.ToString();
-        storyTitlesLabelProfile.text = userInfo.StoryTitlesWon.ToString();
-        gamesPlayedLabelProfile.text = userInfo.GamesPlayed.ToString();
-        gameXpLabelProfile.text = userInfo.GameXp.ToString();
-        gameTitlesWonProfile.text = userInfo.GameTitlesWon.ToString();
+        totalXpLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.StoryXp + userInfo.GameXp);
+        totalTitlesLabelProfile.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
+        storiesReadLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.StoriesRead);
+        storyXpLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.StoryXp);
+        storyTitlesLabelProfile.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon);
+        gamesPlayedLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.GamesPlayed);
+        gameXpLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.GameXp);
+        gameTitlesWonProfile.text = Utils.FormatWithCommas(userInfo.GameTitlesWon);
         profilePictureProfile.sprite = defaultProfilePicture; // Change this later
     }
 
@@ -143,8 +143,8 @@ public class ProfilePopulator : MonoBehaviour
     IEnumerator PopulateFollowingFollowers()
     {
         currentUserDisplayNameFF.text = userInfo.DisplayName;
-        followingButtonText.text = $"<b>Following</b> {userInfo.Following.Count}";
-        followersButtonText.text = $"<b>Followers</b> {userInfo.Followers.Count}";
+        followingButtonText.text = $"<b>Following</b> {Utils.FormatWithCommas(userInfo.Following.Count)}";
+        followersButtonText.text = $"<b>Followers</b> {Utils.FormatWithCommas(userInfo.Followers.Count)}";
 
         Utils.ClearAllChildren(followingContainer);
         Utils.ClearAllChildren(followersContainer);

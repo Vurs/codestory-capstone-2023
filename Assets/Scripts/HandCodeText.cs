@@ -12,12 +12,18 @@ public class HandCodeText : MonoBehaviour
     public TMP_InputField inputCode;
     public Button commit;
 
+    public GameObject popUpCanvas;
+    public TMP_Text correctIncorrect;
+    public TMP_Text blurb;
+    public Button okButton;
+
     private string[] examples = { "//int wholeNum = 5;", @"//String words = ""Hello World"";", "//double decimalNum = 3.4;" };
     private string[] instructions = { "//Create an int variable that stores the value of 25", "//Create a String variable that stores Java is fun", "//Create a double variable that holds 3.1415" };
 
     private int exampleIterator = 0;
     private int instructionIterator = 0;
     private String questionType = "";
+    private bool shouldIterate = false;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +54,23 @@ public class HandCodeText : MonoBehaviour
 
     }
 
+    void PresentPopUp(string titleText, string blurbText, bool setShouldIterate)
+    {
+        shouldIterate = setShouldIterate;
+        correctIncorrect.text = titleText;
+        blurb.text = blurbText;
+        popUpCanvas.SetActive(true);
+    }
+
+    public void OnButtonPress()
+    {
+        popUpCanvas.SetActive(false);
+        if (shouldIterate == true)
+        {
+            iterateQuestion();
+        }
+    }
+
     private void ClickedCommitButton()
     {
         if (examples[exampleIterator].Contains("int"))
@@ -68,6 +91,7 @@ public class HandCodeText : MonoBehaviour
         if (inputCode.text == "")
         {
             Debug.Log("Code is empty");
+            PresentPopUp("Code Empty", "Write some code and try submitting again!", false);
             //TODO: Code Empty Pop up here
         }
         else
@@ -87,11 +111,12 @@ public class HandCodeText : MonoBehaviour
                 if (inputCode.text.Contains("25"))
                 {
                     Debug.Log("Success!");
-                    iterateQuestion();
+                    PresentPopUp("Success!", "Great work!", true);
                 }
                 else
                 {
                     Debug.Log("Oh no. Make sure that your variable is set to the right value.");
+                    PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
                 }
             }
 
@@ -105,11 +130,12 @@ public class HandCodeText : MonoBehaviour
                 if (inputCode.text.Contains(@"""java is fun""")) //Checks if the message is surrounded by double quotes
                 {
                     Debug.Log("Success!");
-                    iterateQuestion();
+                    PresentPopUp("Success!", "Great work!", true);
                 }
                 else
                 {
                     Debug.Log("Oh no. Make sure that your variable is set to the right value.");
+                    PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
                 }
             }
 
@@ -123,17 +149,19 @@ public class HandCodeText : MonoBehaviour
                 if (inputCode.text.Contains("3.1415"))
                 {
                     Debug.Log("Success!");
-                    iterateQuestion();
+                    PresentPopUp("Success!", "Great work!", true);
                 }
                 else
                 {
                     Debug.Log("Oh no. Make sure that your variable is set to the right value.");
+                    PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
                 }
             }
 
             else
             {
                 Debug.Log("Oh no you got an error in your code. Check if you're using the right type, value, and semicolon!");
+                PresentPopUp("Whoops!", "Looks like there's an error. Check if you're using the right type, value, and semicolon!", false);
             }
 
         }

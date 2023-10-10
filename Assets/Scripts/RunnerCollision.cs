@@ -32,6 +32,14 @@ public class RunnerCollision : MonoBehaviour
 
         answerPositionHandler.ResetPositions();
 
+        if (lives == 1)
+        {
+            Debug.Log("Game over");
+            Time.timeScale = 0; //Remember to re init this to 1 to make stuff moving again 
+
+            //Game Over screen here.
+        }
+
         if (col.gameObject.tag == "Answer")
         {
             score++;
@@ -45,9 +53,6 @@ public class RunnerCollision : MonoBehaviour
             livesValue.text = lives.ToString(); 
         }
 
-        if (lives == 0) {
-            Debug.Log("Game over");
-        }
     }
 
     IEnumerator ToggleDebounce()

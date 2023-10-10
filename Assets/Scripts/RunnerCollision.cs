@@ -44,19 +44,9 @@ public class RunnerCollision : MonoBehaviour
 
         answerPositionHandler.ResetPositions();
 
-        if (lives == 1)
-        {
-            Debug.Log("Game over");
-            //Time.timeScale = 0; //Remember to re init this to 1 to make stuff moving again 
-
-            endActivityHandler.EndActivity(endActivityHandler.gameObject, RunnerCollision.score * 10, CodeRunnerGameHandler.elapsedTime);
-
-            //Game Over screen here.
-        }
-
         if (col.gameObject.tag == "Answer")
         {
-            score++;
+            score += 100;
             correctIncorrect.color = textColors["Correct"];
             FlashText(correctIncorrect, "CORRECT!");
             Debug.Log("You got it! score: " +score);
@@ -68,7 +58,17 @@ public class RunnerCollision : MonoBehaviour
             FlashText(correctIncorrect, "INCORRECT!");
             Debug.Log("Oops, wrong answer :(");
             lives--;
-            livesValue.text = lives.ToString(); 
+            livesValue.text = lives.ToString();
+
+            if (lives == 0)
+            {
+                Debug.Log("Game over");
+                //Time.timeScale = 0; //Remember to re init this to 1 to make stuff moving again 
+
+                endActivityHandler.EndActivity(endActivityHandler.gameObject, RunnerCollision.score / 10, CodeRunnerGameHandler.elapsedTime);
+
+                //Game Over screen here.
+            }
         }
 
     }

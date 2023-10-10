@@ -48,7 +48,7 @@ public class textChange : MonoBehaviour
             //Access the last question in the array "End"
             Debug.Log("Done");
             circleJumper.enabled = false;
-            endActivityHandler.EndActivity(endActivityHandler.gameObject, RunnerCollision.score * 10, CodeRunnerGameHandler.elapsedTime);
+            endActivityHandler.EndActivity(endActivityHandler.gameObject, RunnerCollision.score / 10, CodeRunnerGameHandler.elapsedTime);
         }
 
         //Cool boi stuff happens here to change the question when we're within range

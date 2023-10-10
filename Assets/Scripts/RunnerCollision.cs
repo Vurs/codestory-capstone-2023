@@ -20,6 +20,8 @@ public class RunnerCollision : MonoBehaviour
     public TMP_Text correctIncorrect;
     public Animator correctIncorrectAnimator;
 
+    public EndActivityHandler endActivityHandler;
+
     private Dictionary<string, Color> textColors = new Dictionary<string, Color>()
     {
         { "Correct", new Color(0, 203, 255)},
@@ -42,10 +44,12 @@ public class RunnerCollision : MonoBehaviour
 
         answerPositionHandler.ResetPositions();
 
-        if (lives == 0)
+        if (lives == 1)
         {
             Debug.Log("Game over");
-            Time.timeScale = 0; //Remember to re init this to 1 to make stuff moving again 
+            //Time.timeScale = 0; //Remember to re init this to 1 to make stuff moving again 
+
+            endActivityHandler.EndActivity(endActivityHandler.gameObject, RunnerCollision.score * 10, CodeRunnerGameHandler.elapsedTime);
 
             //Game Over screen here.
         }

@@ -75,3 +75,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Kk]eystore/
 /[Aa]ssets/[Kk]eystore.meta
 /[Aa]ssets/[Kk]eystore/*
+
+# Android junk
+GvhProjectSettings.xml

@@ -800,6 +800,7 @@ MonoBehaviour:
   livesValue: {fileID: 0}
   correctIncorrect: {fileID: 0}
   correctIncorrectAnimator: {fileID: 0}
+  endActivityHandler: {fileID: 0}
 --- !u!1 &337243794
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,6 +1071,7 @@ MonoBehaviour:
   livesValue: {fileID: 287962637}
   correctIncorrect: {fileID: 1544851992}
   correctIncorrectAnimator: {fileID: 1544851990}
+  endActivityHandler: {fileID: 552039120}
 --- !u!61 &412255084
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1402,6 +1404,7 @@ MonoBehaviour:
   livesValue: {fileID: 0}
   correctIncorrect: {fileID: 0}
   correctIncorrectAnimator: {fileID: 0}
+  endActivityHandler: {fileID: 0}
 --- !u!1 &538386077
 GameObject:
   m_ObjectHideFlags: 0

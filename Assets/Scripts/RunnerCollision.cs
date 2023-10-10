@@ -17,6 +17,16 @@ public class RunnerCollision : MonoBehaviour
 
     bool debounce = false;
 
+    public TMP_Text correctIncorrect;
+    public Animator correctIncorrectAnimator;
+
+    private Dictionary<string, Color> textColors = new Dictionary<string, Color>()
+    {
+        { "Correct", new Color(0, 203, 255)},
+        { "Incorrect", new Color(255, 0, 12) }
+    };
+    
+
     private void Start()
     {
         score = 0;
@@ -32,22 +42,37 @@ public class RunnerCollision : MonoBehaviour
 
         answerPositionHandler.ResetPositions();
 
+        if (lives == 0)
+        {
+            Debug.Log("Game over");
+            Time.timeScale = 0; //Remember to re init this to 1 to make stuff moving again 
+
+            //Game Over screen here.
+        }
+
         if (col.gameObject.tag == "Answer")
         {
             score++;
+            correctIncorrect.color = textColors["Correct"];
+            FlashText(correctIncorrect, "CORRECT!");
             Debug.Log("You got it! score: " +score);
             scoreValue.text = score.ToString();
         }
         else
         {
+            correctIncorrect.color = textColors["Incorrect"];
+            FlashText(correctIncorrect, "INCORRECT!");
             Debug.Log("Oops, wrong answer :(");
             lives--;
             livesValue.text = lives.ToString(); 
         }
 
-        if (lives == 0) {
-            Debug.Log("Game over");
-        }
+    }
+
+    void FlashText(TMP_Text textLabel, string textToDisplay)
+    {
+        textLabel.text = textToDisplay;
+        correctIncorrectAnimator.SetTrigger("Flash");
     }
 
     IEnumerator ToggleDebounce()

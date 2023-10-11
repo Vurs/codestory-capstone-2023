@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Firebase.Auth;
 
 public class EndActivityHandler : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class EndActivityHandler : MonoBehaviour
 
     public void EndActivity(GameObject obj, int xp, int elapsedTime)
     {
+        DatabaseHandler.IncrementStat("gameXp", xp);
+        DatabaseHandler.IncrementStat("gamesPlayed", 1);
+
         activityXp = xp;
         activityElapsedTime = elapsedTime;
 

@@ -6,6 +6,8 @@ using Firebase.Extensions;
 using System.Threading.Tasks;
 using UnityEngine.UIElements;
 using System;
+using static UnityEngine.Rendering.DebugUI;
+using Firebase.Auth;
 
 public class DatabaseHandler : MonoBehaviour
 {
@@ -314,5 +316,63 @@ public class DatabaseHandler : MonoBehaviour
     public static UserInfo GetFetchedUserInfo()
     {
         return userInfo;
+    }
+
+    public static void IncrementStat(string statName, int value)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            DatabaseReference rootReference = FirebaseDatabase.DefaultInstance.RootReference;
+            DatabaseReference userReference = rootReference.Child("users").Child(user.UserId);
+
+            userReference.GetValueAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompleted)
+                {
+                    DataSnapshot snapshot = task.Result;
+                    DataSnapshot oldStatSnapshot = snapshot.Child(statName);
+                    if (oldStatSnapshot.Exists)
+                    {
+                        int oldValue = int.Parse(oldStatSnapshot.Value.ToString());
+                        userReference.Child(statName).SetValueAsync(oldValue + value).ContinueWithOnMainThread(task =>
+                        {
+                            if (task.IsCompleted)
+                            {
+                                Debug.Log($"Successfully updated stat {statName}");
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"Unable to update stat {statName}");
+                            }
+                        });
+                    }
+                    else
+                    {
+                        userReference.Child(statName).SetValueAsync(0).ContinueWithOnMainThread(task =>
+                        {
+                            if (task.IsCompleted)
+                            {
+                                Debug.Log($"Successfully updated stat {statName}");
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"Unable to update stat {statName}");
+                            }
+                        });
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Error fetching stat {statName}");
+                }
+            });
+        }
+        else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
     }
 }

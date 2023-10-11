@@ -55,41 +55,28 @@ public class Utils : MonoBehaviour
         children.ForEach(child => Destroy(child));
     }
 
-    public static string ConvertNumberToShorthand(int number)
+    public static string ConvertToShorthand(float number)
     {
-        string[] suffixes = { "K", "M", "B", "T" };
+        string[] suffixes = { "", "k", "M", "B", "T" };
+        int suffixIndex = 0;
 
-        int index = 0;
-        double num = (double)number;
-
-        // Keep dividing the number by 1000 and moving to the next suffix until it's less than 1000
-        while (num >= 1000 && index < suffixes.Length - 1)
+        while (number >= 1000.0 && suffixIndex < suffixes.Length - 1)
         {
-            num /= 1000;
-            index++;
+            number /= 1000.0f;
+            suffixIndex++;
         }
 
-        // Format the number with the appropriate suffix and decimal place
-        string result = num.ToString("0.0") + suffixes[index];
-        return result;
-    }
-
-    public static string ConvertNumberToShorthand(float number)
-    {
-        string[] suffixes = { "K", "M", "B", "T" };
-
-        int index = 0;
-        double num = (double)number;
-
-        // Keep dividing the number by 1000 and moving to the next suffix until it's less than 1000
-        while (num >= 1000 && index < suffixes.Length - 1)
+        string result = number.ToString("0.0");
+        if (result.EndsWith(".0"))
         {
-            num /= 1000;
-            index++;
+            result = number.ToString("0");
         }
 
-        // Format the number with the appropriate suffix and decimal place
-        string result = num.ToString("0.0") + suffixes[index];
+        if (suffixIndex > 0)
+        {
+            result += suffixes[suffixIndex];
+        }
+
         return result;
     }
 

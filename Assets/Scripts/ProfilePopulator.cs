@@ -82,7 +82,7 @@ public class ProfilePopulator : MonoBehaviour
         handleLabelHome.text = $"@{userInfo.Handle}";
         followingFollowersLabelHome.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
         dailyStreakLabelHome.text = "0"; // Change this later
-        totalXpLabelHome.text = Utils.ConvertNumberToShorthand(userInfo.StoryXp + userInfo.GameXp);
+        totalXpLabelHome.text = Utils.ConvertToShorthand(userInfo.StoryXp + userInfo.GameXp);
         totalTitlesLabelHome.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
         profilePictureHome.sprite = defaultProfilePicture;
     }
@@ -98,13 +98,13 @@ public class ProfilePopulator : MonoBehaviour
         lastActiveLabelProfile.text = "Last Active: Just now"; // Change this later
         followingFollowersLabelProfile.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
         dailyStreakLabelProfile.text = "0"; // Change this later
-        totalXpLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.StoryXp + userInfo.GameXp);
+        totalXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoryXp + userInfo.GameXp);
         totalTitlesLabelProfile.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
-        storiesReadLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.StoriesRead);
-        storyXpLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.StoryXp);
+        storiesReadLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoriesRead);
+        storyXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoryXp);
         storyTitlesLabelProfile.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon);
-        gamesPlayedLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.GamesPlayed);
-        gameXpLabelProfile.text = Utils.ConvertNumberToShorthand(userInfo.GameXp);
+        gamesPlayedLabelProfile.text = Utils.ConvertToShorthand(userInfo.GamesPlayed);
+        gameXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.GameXp);
         gameTitlesWonProfile.text = Utils.FormatWithCommas(userInfo.GameTitlesWon);
         profilePictureProfile.sprite = defaultProfilePicture; // Change this later
     }

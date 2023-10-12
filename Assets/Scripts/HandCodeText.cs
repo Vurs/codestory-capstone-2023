@@ -108,15 +108,15 @@ public class HandCodeText : MonoBehaviour
 
             if (questionType == "int" && type == "int" && strToChar[strToChar.Length - 1] == ';' && inputCode.text.Contains("wholeNum"))
             {
-                if (inputCode.text.Contains("25"))
-                {
-                    Debug.Log("Success!");
-                    PresentPopUp("Success!", "Great work!", true);
-                }
-                else
+                if (inputCode.text.Contains(@"""25"""))
                 {
                     Debug.Log("Oh no. Make sure that your variable is set to the right value.");
                     PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
+                }
+                else
+                {
+                    Debug.Log("Success!");
+                    PresentPopUp("Success!", "Great work!", true);
                 }
             }
 
@@ -146,15 +146,15 @@ public class HandCodeText : MonoBehaviour
             {
                 inputCode.text = inputCode.text.ToLower();
 
-                if (inputCode.text.Contains("3.1415"))
-                {
-                    Debug.Log("Success!");
-                    PresentPopUp("Success!", "Great work!", true);
-                }
-                else
+                if (inputCode.text.Contains(@"""3.1415"""))
                 {
                     Debug.Log("Oh no. Make sure that your variable is set to the right value.");
                     PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
+                }
+                else
+                {
+                    Debug.Log("Success!");
+                    PresentPopUp("Success!", "Great work!", true);
                 }
             }
 

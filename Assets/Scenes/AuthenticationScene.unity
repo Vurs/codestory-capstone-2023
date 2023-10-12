@@ -383,7 +383,7 @@ MonoBehaviour:
   warningRegisterText: {fileID: 8470192491183890428}
   registerUI: {fileID: 5341202334616379500}
   loginUI: {fileID: 4239803003620930855}
-  apiUrl: http://ip-api.com/json
+  ipApiUrl: http://ip-api.com/json
 --- !u!4 &677935475
 Transform:
   m_ObjectHideFlags: 0
@@ -3943,7 +3943,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &4167990786170146571
 MonoBehaviour:
   m_ObjectHideFlags: 0

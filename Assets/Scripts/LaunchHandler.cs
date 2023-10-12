@@ -7,9 +7,13 @@ using Firebase.Database;
 using UnityEngine.SceneManagement;
 using Firebase.Extensions;
 using System;
+using TMPro;
 
 public class LaunchHandler : MonoBehaviour
 {
+    public VersionChecker versionChecker;
+    public TMP_Text statusText;
+
     private DependencyStatus dependencyStatus;
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -137,16 +141,22 @@ public class LaunchHandler : MonoBehaviour
         // Wait a few seconds to let login data load properly
         yield return new WaitForSeconds(loadTime);
 
-        user = auth.CurrentUser;
-        if (user != null)
+        StartCoroutine(versionChecker.CheckForUpdate(statusText, () =>
         {
-            // User has already logged in before, send them to the home page
-            SceneManager.LoadSceneAsync("HomeScene");
-        }
-        else
-        {
-            // User is not already logged in, send them to the authentication page
-            SceneManager.LoadSceneAsync("AuthenticationScene");
-        }
+            if (versionChecker.isLatestVersion == true)
+            {
+                user = auth.CurrentUser;
+                if (user != null)
+                {
+                    // User has already logged in before, send them to the home page
+                    SceneManager.LoadSceneAsync("HomeScene");
+                }
+                else
+                {
+                    // User is not already logged in, send them to the authentication page
+                    SceneManager.LoadSceneAsync("AuthenticationScene");
+                }
+            }
+        }));
     }
 }

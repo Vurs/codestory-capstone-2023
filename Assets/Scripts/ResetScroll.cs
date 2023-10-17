@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 public class ResetScroll : MonoBehaviour
 {
-    public ScrollRect scrollRect;
+    public ScrollRect[] scrollRects;
 
     // Start is called before the first frame update
     void Start()
     {
-        scrollRect.verticalNormalizedPosition = 1.0f;
+        foreach(ScrollRect rect in scrollRects) {
+            rect.verticalNormalizedPosition = 1.0f;
+        }
     }
 }

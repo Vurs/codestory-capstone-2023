@@ -20,6 +20,8 @@ public class HandCodeText : MonoBehaviour
     private string[] examples = { "//int wholeNum = 5;", @"//String words = ""Hello World"";", "//double decimalNum = 3.4;" };
     private string[] instructions = { "//Create an int variable called wholeNum that stores the value of 25", "//Create a String variable called stringVar that stores Java is fun", "//Create a double variable called doubleNum that holds 3.1415" };
 
+    private String[] answers = {"25", "Java is fun", "3.1415"};
+
     private int exampleIterator = 0;
     private int instructionIterator = 0;
     private String questionType = "";
@@ -100,23 +102,23 @@ public class HandCodeText : MonoBehaviour
             String type = str[0];
             char[] strToChar = inputCode.text.ToCharArray();
 
-
-
-            Debug.Log(strToChar[strToChar.Length - 1]);
-
             //For int question
 
             if (questionType == "int" && type == "int" && strToChar[strToChar.Length - 1] == ';' && inputCode.text.Contains("wholeNum"))
             {
-                if (inputCode.text.Contains(@"""25"""))
+                if (inputCode.text.Contains(@"""" + answers[instructionIterator] + @""""))
                 {
                     Debug.Log("Oh no. Make sure that your variable is set to the right value.");
                     PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
                 }
-                else
+                else if (inputCode.text.Contains(answers[instructionIterator]))
                 {
                     Debug.Log("Success!");
                     PresentPopUp("Success!", "Great work!", true);
+                }
+                else {
+                    Debug.Log("Oh no. Make sure that your variable is set to the right value.");
+                    PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
                 }
             }
 
@@ -125,9 +127,9 @@ public class HandCodeText : MonoBehaviour
 
             else if (questionType == "String" && type == "String" && strToChar[strToChar.Length - 1] == ';' && inputCode.text.Contains("stringVar"))
             {
-                inputCode.text = inputCode.text.ToLower();
+                //inputCode.text = inputCode.text.ToLower();
 
-                if (inputCode.text.Contains(@"""java is fun""")) //Checks if the message is surrounded by double quotes
+                if (inputCode.text.Contains(@"""" +answers[instructionIterator]+@"""")) //Checks if the message is surrounded by double quotes
                 {
                     Debug.Log("Success!");
                     PresentPopUp("Success!", "Great work!", true);
@@ -144,17 +146,20 @@ public class HandCodeText : MonoBehaviour
 
             else if (questionType == "double" && type == "double" && strToChar[strToChar.Length - 1] == ';' && inputCode.text.Contains("doubleNum"))
             {
-                inputCode.text = inputCode.text.ToLower();
-
-                if (inputCode.text.Contains(@"""3.1415"""))
+                if (inputCode.text.Contains(@"""" + answers[instructionIterator] + @""""))
                 {
                     Debug.Log("Oh no. Make sure that your variable is set to the right value.");
                     PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
                 }
-                else
+                else if (inputCode.text.Contains(answers[instructionIterator]))
                 {
                     Debug.Log("Success!");
                     PresentPopUp("Success!", "Great work!", true);
+                }
+                else
+                {
+                    Debug.Log("Oh no. Make sure that your variable is set to the right value.");
+                    PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
                 }
             }
 
@@ -174,6 +179,5 @@ public class HandCodeText : MonoBehaviour
     }
 }
 
-//TODO: Need to figure out a way to only accept ints or doubles without double quotaition marks -> Right now it accepts both -> Maybe parse it? 
-//TODO: Pop up windows for if the input box is blank, error messages, and success messages 
 //TODO: Add more questions 
+//TODO: Take off trailing spaces

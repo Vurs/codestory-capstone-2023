@@ -57,7 +57,7 @@ public class Utils : MonoBehaviour
 
     public static string ConvertToShorthand(float number)
     {
-        string[] suffixes = { "", "k", "M", "B", "T" };
+        string[] suffixes = { "", "K", "M", "B", "T" };
         int suffixIndex = 0;
 
         while (number >= 1000.0 && suffixIndex < suffixes.Length - 1)

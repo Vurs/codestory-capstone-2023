@@ -138,8 +138,14 @@ public class LaunchHandler : MonoBehaviour
 
     private IEnumerator HandlePersistentLogin()
     {
+        float loadSpinnerTime = 0.5f;
+        yield return new WaitForSeconds(loadSpinnerTime);
+
+        statusText.text = "Loading assets...";
+        AnimateSpinner.isSpinning = true;
+
         // Wait a few seconds to let login data load properly
-        yield return new WaitForSeconds(loadTime);
+        yield return new WaitForSeconds(loadTime - loadSpinnerTime);
 
         StartCoroutine(versionChecker.CheckForUpdate(statusText, () =>
         {

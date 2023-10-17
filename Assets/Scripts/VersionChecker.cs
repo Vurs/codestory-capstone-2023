@@ -34,6 +34,7 @@ public class VersionChecker : MonoBehaviour
 
             if (latestVersion != currentVersion)
             {
+                AnimateSpinner.isSpinning = false;
                 Debug.Log("A new version is available. Please update your app.");
                 statusText.text = "A new version is available. Please update your app.";
             }

@@ -17,10 +17,10 @@ public class HandCodeText : MonoBehaviour
     public TMP_Text blurb;
     public Button okButton;
 
-    private string[] examples = { "//int wholeNum = 5;", @"//String words = ""Hello World"";", "//double decimalNum = 3.4;" };
-    private string[] instructions = { "//Create an int variable called wholeNum that stores the value of 25", "//Create a String variable called stringVar that stores Java is fun", "//Create a double variable called doubleNum that holds 3.1415" };
+    private string[] examples = { "//int wholeNum = 5;", @"//String words = ""Hello World"";", "//double decimalNum = 3.4;", "//int wholeNum = 5;", @"//String words = ""Hello World"";", "//double decimalNum = 3.4;", "//int wholeNum = 5;", @"//String words = ""Hello World"";", "//double decimalNum = 3.4;" };
+    private string[] instructions = { "//Create an int variable called wholeNum that stores the value of 25", "//Create a String variable called stringVar that stores Java is fun", "//Create a double variable called doubleNum that holds 3.1415", "//Create an int variable called wholeNum that stores 300", "//Create a String variable called stringVar that stores Hello Java!", "//Create a double variaible called doubleNum that stores 7.543215", "//Create an int called wholeNum that store 404", "//Create a String variable called stringVar that stores I'm learning Java","//Create a double variaible called doubleNum that stores 154.25410" };
 
-    private String[] answers = {"25", "Java is fun", "3.1415"};
+    private String[] answers = {"25", "Java is fun", "3.1415", "300", "Hello Java!", "7.543215", "404", "I'm learning Java", "154.25410" };
 
     private int exampleIterator = 0;
     private int instructionIterator = 0;
@@ -34,6 +34,10 @@ public class HandCodeText : MonoBehaviour
         commentInstructions.text = instructions[instructionIterator];
 
         commit.onClick.AddListener(ClickedCommitButton);
+
+        Debug.Log("Examples length: " +examples.Length);
+        Debug.Log("instructions length: " +instructions.Length);
+        Debug.Log("answers length: " +answers.Length);
     }
 
     void iterateQuestion()
@@ -108,7 +112,7 @@ public class HandCodeText : MonoBehaviour
 
             if (questionType == "int" && type == "int" && strToChar[strToChar.Length - 1] == ';' && inputCode.text.Contains("wholeNum"))
             {
-                if (inputCode.text.Contains(@"""" + answers[instructionIterator] + @""""))
+                if (inputCode.text.Contains(@"""" + answers[instructionIterator] + @"""") || inputCode.text.Contains(@"""" + answers[instructionIterator]) || inputCode.text.Contains(answers[instructionIterator] + @""""))
                 {
                     Debug.Log("Oh no. Make sure that your variable is set to the right value.");
                     PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
@@ -148,7 +152,7 @@ public class HandCodeText : MonoBehaviour
 
             else if (questionType == "double" && type == "double" && strToChar[strToChar.Length - 1] == ';' && inputCode.text.Contains("doubleNum"))
             {
-                if (inputCode.text.Contains(@"""" + answers[instructionIterator] + @""""))
+                if (inputCode.text.Contains(@"""" + answers[instructionIterator] + @"""") || inputCode.text.Contains(@"""" + answers[instructionIterator]) || inputCode.text.Contains(answers[instructionIterator] + @""""))
                 {
                     Debug.Log("Oh no. Make sure that your variable is set to the right value.");
                     PresentPopUp("Whoops!", "Make sure your variable is set to the right value!", false);
@@ -180,5 +184,3 @@ public class HandCodeText : MonoBehaviour
 
     }
 }
-
-//TODO: Add more questions 

@@ -89,6 +89,8 @@ public class HandCodeText : MonoBehaviour
 
         Debug.Log(questionType);
 
+        inputCode.text = inputCode.text.Trim();
+
 
         if (inputCode.text == "")
         {
@@ -180,4 +182,3 @@ public class HandCodeText : MonoBehaviour
 }
 
 //TODO: Add more questions 
-//TODO: Take off trailing spaces

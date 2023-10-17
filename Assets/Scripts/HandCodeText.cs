@@ -18,9 +18,9 @@ public class HandCodeText : MonoBehaviour
     public Button okButton;
 
     private string[] examples = { "//int wholeNum = 5;", @"//String words = ""Hello World"";", "//double decimalNum = 3.4;", "//int wholeNum = 5;", @"//String words = ""Hello World"";", "//double decimalNum = 3.4;", "//int wholeNum = 5;", @"//String words = ""Hello World"";", "//double decimalNum = 3.4;" };
-    private string[] instructions = { "//Create an int variable called wholeNum that stores the value of 25", "//Create a String variable called stringVar that stores Java is fun", "//Create a double variable called doubleNum that holds 3.1415", "//Create an int variable called wholeNum that stores 300", "//Create a String variable called stringVar that stores Hello Java!", "//Create a double variaible called doubleNum that stores 7.543215", "//Create an int called wholeNum that store 404", "//Create a String variable called stringVar that stores I'm learning Java","//Create a double variaible called doubleNum that stores 154.25410" };
+    private string[] instructions = { "//Create an int variable called wholeNum that stores the value of 25", "//Create a String variable called stringVar that stores Java is fun", "//Create a double variable called doubleNum that holds 3.1415", "//Create an int variable called wholeNum that stores 300", "//Create a String variable called stringVar that stores Hello Java!", "//Create a double variaible called doubleNum that stores 7.543215", "//Create an int called wholeNum that store 404", "//Create a String variable called stringVar that stores I'm learning Java","//Create a double variaible called doubleNum that stores 154.25410"};
 
-    private String[] answers = {"25", "Java is fun", "3.1415", "300", "Hello Java!", "7.543215", "404", "I'm learning Java", "154.25410" };
+    private String[] answers = {"25", "Java is fun", "3.1415", "300", "Hello Java!", "7.543215", "404", "I'm learning Java", "154.25410"};
 
     private int exampleIterator = 0;
     private int instructionIterator = 0;
@@ -174,6 +174,12 @@ public class HandCodeText : MonoBehaviour
                 Debug.Log("Oh no you got an error in your code. Check if you're using the right type, value, and semicolon!");
                 PresentPopUp("Whoops!", "Looks like there's an error. Check if you're using the right type, variable name, value, and semicolon!", false);
             }
+
+        }
+
+        if (instructionIterator == instructions.Length - 1) {
+            Debug.Log("Here");
+            PresentPopUp("Congratulations!", "You finished the level!", false);
 
         }
     }

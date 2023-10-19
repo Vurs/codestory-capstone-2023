@@ -38,16 +38,40 @@ public class ToggleSwitch : MonoBehaviour, IPointerDownHandler
     public delegate void ValueChanged(bool value);
     public event ValueChanged valueChanged;
 
+    public bool defaultValue = false;
+    public string playerPrefsKey = "";
+
     // Start is called before the first frame update
     void Start()
     {
         offX = 0; // toggleIndicator.anchoredPosition.x; // Start position
         onX = 58.54258f; // backgroundImage.rectTransform.rect.width - (toggleIndicator.rect.width * 0.775f);
+
+        if (PlayerPrefs.HasKey(playerPrefsKey) == true)
+        {
+            ForceToggle(PlayerPrefs.GetInt(playerPrefsKey) == 1);
+        } else
+        {
+            ForceToggle(defaultValue);
+        }
     }
 
     private void OnEnable()
     {
         Toggle(isOn); // Make sure the switch is set correctly
+    }
+
+    public void ForceToggle(bool value)
+    {
+        _isOn = value;
+
+        ToggleColor(isOn);
+        MoveIndicator(isOn);
+
+        if (valueChanged != null)
+        {
+            valueChanged(isOn);
+        }
     }
 
     public void Toggle(bool value, Action callback = null)
@@ -96,6 +120,10 @@ public class ToggleSwitch : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Toggle(!isOn); // Flips the switch when clicked
+        Toggle(!isOn, () =>
+        {
+            int value = isOn == true ? 1 : 0;
+            PlayerPrefs.SetInt(playerPrefsKey, value);
+        }); // Flips the switch when clicked
     }
 }

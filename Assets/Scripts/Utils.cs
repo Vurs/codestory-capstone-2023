@@ -9,7 +9,9 @@ public class Utils : MonoBehaviour
 {
     public static Dictionary<string, Color32> TabColors = new Dictionary<string, Color32> {
         { "BLUE", new Color32(1, 95, 200, 255) },
-        { "GRAY", new Color32(44, 53, 63, 255) }
+        { "GRAY", new Color32(44, 53, 63, 255) },
+        { "TAB_UNUSED", new Color32(255, 255, 255, 67) },
+        { "TAB_USED", new Color32(255, 255, 255, 255) }
     };
 
     public static string ConvertToMS(int totalSeconds)

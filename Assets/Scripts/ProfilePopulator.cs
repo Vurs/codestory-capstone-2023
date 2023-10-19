@@ -56,6 +56,10 @@ public class ProfilePopulator : MonoBehaviour
 
     public UserInfo userInfo;
 
+    private List<string> recentUsers;
+    public GameObject discoverUserPrefab;
+    public GameObject discoverContainer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -68,6 +72,9 @@ public class ProfilePopulator : MonoBehaviour
                 PopulateHome();
                 PopulateProfile();
                 StartCoroutine(PopulateFollowingFollowers());
+                StartCoroutine(GetMostRecentUsersCoroutine(() => {
+                    StartCoroutine(PopulateDiscoverUsers());
+                }));
             }));
         } else
         {
@@ -222,5 +229,52 @@ public class ProfilePopulator : MonoBehaviour
 
         followingFollowersPage.SetActive(false);
         profilePage.SetActive(true);
+    }
+
+    IEnumerator GetMostRecentUsersCoroutine(Action callback)
+    {
+        Task task = DatabaseHandler.FetchRecentUsersAsync();
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        recentUsers = DatabaseHandler.GetFetchedRecentUsers();
+
+        callback.Invoke();
+    }
+
+    IEnumerator PopulateDiscoverUsers()
+    {
+        Utils.ClearAllChildren(discoverContainer);
+
+        foreach (string userId in recentUsers)
+        {
+            bool isCompleted = false;
+
+            StartCoroutine(GetUserDataCoroutine(userId, () =>
+            {
+                GameObject discoverClone = Instantiate(discoverUserPrefab);
+                GameObject profilePictureHolder = discoverClone.transform.Find("ProfilePicture").gameObject;
+                Image profilePictureImage = profilePictureHolder.transform.Find("Image").gameObject.GetComponent<Image>();
+                TMP_Text displayNameLabel = discoverClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
+                TMP_Text usernameLabel = discoverClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
+
+                profilePictureImage.sprite = defaultProfilePicture; // Change this later
+                displayNameLabel.text = userInfo.DisplayName;
+                usernameLabel.text = $"@{userInfo.Handle}";
+                discoverClone.transform.SetParent(discoverContainer.transform, false);
+
+                Button button = discoverClone.transform.Find("FollowButton").GetComponent<Button>();
+                button.onClick.AddListener(() => { OnFollowClicked(userId); });
+
+                isCompleted = true;
+            }));
+
+            yield return new WaitUntil(() => isCompleted == true);
+        }
+    }
+
+    void OnFollowClicked(string userId)
+    {
+        // Follow code here
+        Debug.Log("Attempting to follow " + userId);
     }
 }

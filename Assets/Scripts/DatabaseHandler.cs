@@ -13,6 +13,7 @@ public class DatabaseHandler : MonoBehaviour
 {
     private static List<Story> stories;
     private static List<Minigame> minigames;
+    private static List<string> recentUsers;
 
     private static UserInfo userInfo;
 
@@ -316,6 +317,52 @@ public class DatabaseHandler : MonoBehaviour
     public static UserInfo GetFetchedUserInfo()
     {
         return userInfo;
+    }
+
+    public static async Task<List<string>> FetchRecentUsersAsync(int numEntries = 5)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        recentUsers = new List<string>();
+        DatabaseReference rootReference = FirebaseDatabase.DefaultInstance.RootReference;
+        Query query = rootReference.Child("users").OrderByChild("timestamp").LimitToLast(numEntries);
+
+        TaskCompletionSource<List<string>> tcs = new TaskCompletionSource<List<string>>();
+
+        try
+        {
+            DataSnapshot snapshot = await query.GetValueAsync();
+
+            if (snapshot.Exists)
+            {
+                foreach (DataSnapshot childSnapshot in snapshot.Children)
+                {
+                    string userId = childSnapshot.Key;
+                    if (userId == user.UserId) continue;
+
+                    recentUsers.Add(userId);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Error fetching most recent entries from query: Snapshot does not exist.");
+            }
+
+            tcs.SetResult(recentUsers);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error fetching most recent entries from query: " + ex.Message);
+            tcs.SetException(ex);
+        }
+
+        return await tcs.Task;
+    }
+
+    public static List<string> GetFetchedRecentUsers()
+    {
+        return recentUsers;
     }
 
     public static void IncrementStat(string statName, int value)

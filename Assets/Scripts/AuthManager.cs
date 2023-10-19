@@ -288,7 +288,9 @@ public class AuthManager : MonoBehaviour
                             { "storyTitlesWon", 0 },
                             { "gameTitlesWon", 0 },
                             { "countryCode", countryCode },
-                            { "countryName", countryName }
+                            { "countryName", countryName },
+                            { "creationTimestamp", unixTimestampMillis },
+                            { "isDiscoverable", true }
                         };
                         rootReference.Child("users").Child(user.UserId).SetValueAsync(userData).ContinueWithOnMainThread(task =>
                         {

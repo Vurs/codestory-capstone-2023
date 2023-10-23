@@ -38,9 +38,12 @@ public class RunnerCollision : MonoBehaviour
 
     public TMP_Text scoreText;
     public TMP_Text highestScoreText;
+    public TMP_Text newHighestScoreText;
     public TMP_Text timeElapsedText;
     public Button playAgainButton;
     public Button returnHomeButton;
+
+    public SFXHandler sfxHandler;
 
     private void Start()
     {
@@ -59,6 +62,7 @@ public class RunnerCollision : MonoBehaviour
 
         if (col.gameObject.tag == "Answer")
         {
+            SFXHandler.PlaySound(sfxHandler.success);
             score += 100;
             correctIncorrect.color = textColors["Correct"];
             FlashText(correctIncorrect, "CORRECT!");
@@ -83,20 +87,20 @@ public class RunnerCollision : MonoBehaviour
                 if (PlayerPrefs.HasKey("CodeRunner_HighestScore"))
                 {
                     highestScore = PlayerPrefs.GetInt("CodeRunner_HighestScore");
-                    highestScoreText.text = highestScore.ToString();
+                    if (score > highestScore)
+                    {
+                        newHighestScoreText.text = "NEW!";
+                        highestScore = score;
+                        PlayerPrefs.SetInt("CodeRunner_HighestScore", score);
+                    }
                 } else
                 {
                     highestScore = score;
-                    highestScoreText.text = score.ToString();
-                }
-
-                if (score >= highestScore)
-                {
-                    PlayerPrefs.SetInt("CodeRunner_HighestScore", score);
                 }
 
                 scoreText.text = score.ToString();
                 timeElapsedText.text = Utils.ConvertToMS(CodeRunnerGameHandler.elapsedTime);
+                highestScoreText.text = highestScore.ToString();
 
                 playerAnimator.SetTrigger("GameOver");
                 roadAnimator.SetTrigger("GameOver");

@@ -60,6 +60,8 @@ public class ProfilePopulator : MonoBehaviour
     public GameObject discoverUserPrefab;
     public GameObject discoverContainer;
 
+    public ProfilePictureManager profilePictureManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -71,15 +73,19 @@ public class ProfilePopulator : MonoBehaviour
             StartCoroutine(GetUserDataCoroutine(user.UserId, () => {
                 PopulateHome();
                 PopulateProfile();
-                StartCoroutine(PopulateFollowingFollowers());
-                StartCoroutine(GetMostRecentUsersCoroutine(() => {
-                    StartCoroutine(PopulateDiscoverUsers());
+                StartCoroutine(PopulateFollowingFollowers(() =>
+                {
+                    StartCoroutine(GetMostRecentUsersCoroutine(() => {
+                        StartCoroutine(PopulateDiscoverUsers());
+                    }));
                 }));
             }));
         } else
         {
             Debug.LogError("No user is currently authenticated.");
         }
+
+        profilePictureManager = GameObject.Find("ProfilePictureManager").GetComponent<ProfilePictureManager>();
     }
 
     public void PopulateHome()
@@ -91,7 +97,7 @@ public class ProfilePopulator : MonoBehaviour
         dailyStreakLabelHome.text = "0"; // Change this later
         totalXpLabelHome.text = Utils.ConvertToShorthand(userInfo.StoryXp + userInfo.GameXp);
         totalTitlesLabelHome.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
-        profilePictureHome.sprite = defaultProfilePicture;
+        profilePictureManager.SetImage(profilePictureHome, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
     }
 
     public void PopulateProfile()
@@ -100,7 +106,6 @@ public class ProfilePopulator : MonoBehaviour
         handleLabelProfile.text = $"@{userInfo.Handle}";
         titleLabelProfile.text = userInfo.Title;
         countryLabelProfile.text = userInfo.CountryName;
-        //countryImageProfile.sprite = defaultProfilePicture; // Change this later
         StartCoroutine(Utils.LoadFlagImageCoroutine(countryImageProfile, userInfo.CountryCode));
         lastActiveLabelProfile.text = "Last Active: Just now"; // Change this later
         followingFollowersLabelProfile.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
@@ -113,7 +118,8 @@ public class ProfilePopulator : MonoBehaviour
         gamesPlayedLabelProfile.text = Utils.ConvertToShorthand(userInfo.GamesPlayed);
         gameXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.GameXp);
         gameTitlesWonProfile.text = Utils.FormatWithCommas(userInfo.GameTitlesWon);
-        profilePictureProfile.sprite = defaultProfilePicture; // Change this later
+        //profilePictureProfile.sprite = defaultProfilePicture; // Change this later
+        profilePictureManager.SetImage(profilePictureProfile, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
     }
 
     public void PopulateOwnProfile()
@@ -146,7 +152,7 @@ public class ProfilePopulator : MonoBehaviour
         callback.Invoke();
     }
 
-    IEnumerator PopulateFollowingFollowers()
+    IEnumerator PopulateFollowingFollowers(Action callback = null)
     {
         currentUserDisplayNameFF.text = userInfo.DisplayName;
         followingButtonText.text = $"<b>Following</b> {Utils.FormatWithCommas(userInfo.Following.Count)}";
@@ -179,7 +185,8 @@ public class ProfilePopulator : MonoBehaviour
                 TMP_Text displayNameLabel = followingClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
                 TMP_Text usernameLabel = followingClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
 
-                profilePictureImage.sprite = defaultProfilePicture; // Change this later
+                //profilePictureImage.sprite = defaultProfilePicture; // Change this later
+                profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
                 displayNameLabel.text = userInfo.DisplayName;
                 usernameLabel.text = $"@{userInfo.Handle}";
                 followingClone.transform.SetParent(followingContainer.transform, false);
@@ -205,7 +212,8 @@ public class ProfilePopulator : MonoBehaviour
                 TMP_Text displayNameLabel = followerClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
                 TMP_Text usernameLabel = followerClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
 
-                profilePictureImage.sprite = defaultProfilePicture; // Change this later
+                //profilePictureImage.sprite = defaultProfilePicture; // Change this later
+                profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
                 displayNameLabel.text = userInfo.DisplayName;
                 usernameLabel.text = $"@{userInfo.Handle}";
                 followerClone.transform.SetParent(followersContainer.transform, false);
@@ -217,6 +225,11 @@ public class ProfilePopulator : MonoBehaviour
             }));
 
             yield return new WaitUntil(() => isCompleted == true);
+        }
+
+        if (callback  != null)
+        {
+            callback.Invoke();
         }
     }
 
@@ -257,7 +270,8 @@ public class ProfilePopulator : MonoBehaviour
                 TMP_Text displayNameLabel = discoverClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
                 TMP_Text usernameLabel = discoverClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
 
-                profilePictureImage.sprite = defaultProfilePicture; // Change this later
+                //profilePictureImage.sprite = defaultProfilePicture; // Change this later
+                profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
                 displayNameLabel.text = userInfo.DisplayName;
                 usernameLabel.text = $"@{userInfo.Handle}";
                 discoverClone.transform.SetParent(discoverContainer.transform, false);

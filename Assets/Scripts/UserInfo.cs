@@ -7,7 +7,7 @@ public class UserInfo
     public string DisplayName { get; set; }
     public string Handle { get; set; }
     public string UserId { get; set; }
-    public string ProfilePicture {  get; set; }
+    public int ProfilePicture {  get; set; }
     public List<string> Followers { get; set; }
     public List<string> Following { get; set; }
     public string Title { get; set; }

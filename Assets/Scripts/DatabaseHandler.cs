@@ -260,7 +260,7 @@ public class DatabaseHandler : MonoBehaviour
                 userInfo.DisplayName = snapshot.Child("displayName").Value.ToString();
                 userInfo.Handle = snapshot.Child("handle").Value.ToString();
                 userInfo.UserId = userId;
-                userInfo.ProfilePicture = snapshot.Child("profilePicture").Value.ToString();
+                userInfo.ProfilePicture = int.Parse(snapshot.Child("profilePicture").Value.ToString());
                 userInfo.Title = snapshot.Child("title").Value.ToString();
                 userInfo.LastSignIn = long.Parse(snapshot.Child("lastSignIn").Value.ToString());
                 userInfo.StoriesRead = int.Parse(snapshot.Child("storiesRead").Value.ToString());

@@ -11,6 +11,7 @@ using System.Net;
 using Newtonsoft.Json.Linq;
 using Firebase.Extensions;
 using UnityEngine.Networking;
+using Random = UnityEngine.Random;
 
 public class AuthManager : MonoBehaviour
 {
@@ -278,7 +279,7 @@ public class AuthManager : MonoBehaviour
                             { "userId", user.UserId },
                             { "displayName", user.DisplayName },
                             { "handle", user.DisplayName },
-                            { "profilePicture", "undefined" },
+                            { "profilePicture", Random.Range(1, 7) },
                             { "title", "Beginner" },
                             { "lastSignIn",  unixTimestampMillis},
                             { "storiesRead", 0 },

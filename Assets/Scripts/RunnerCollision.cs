@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class RunnerCollision : MonoBehaviour
 {
@@ -27,7 +29,18 @@ public class RunnerCollision : MonoBehaviour
         { "Correct", new Color(0, 203, 255)},
         { "Incorrect", new Color(255, 0, 12) }
     };
-    
+
+    public Animator endScreenAnimator;
+    public Animator playerAnimator;
+    public Animator roadAnimator;
+
+    public GameObject answers;
+
+    public TMP_Text scoreText;
+    public TMP_Text highestScoreText;
+    public TMP_Text timeElapsedText;
+    public Button playAgainButton;
+    public Button returnHomeButton;
 
     private void Start()
     {
@@ -63,9 +76,45 @@ public class RunnerCollision : MonoBehaviour
             if (lives == 0)
             {
                 Debug.Log("Game over");
-                //Time.timeScale = 0; //Remember to re init this to 1 to make stuff moving again 
+                CodeRunnerGameHandler.gameOver = true;
+                //Time.timeScale = 0; //Remember to re init this to 1 to make stuff moving again
 
-                endActivityHandler.EndActivity(endActivityHandler.gameObject, RunnerCollision.score / 10, CodeRunnerGameHandler.elapsedTime);
+                int highestScore = 0;
+                if (PlayerPrefs.HasKey("CodeRunner_HighestScore"))
+                {
+                    highestScore = PlayerPrefs.GetInt("CodeRunner_HighestScore");
+                    highestScoreText.text = highestScore.ToString();
+                } else
+                {
+                    highestScore = score;
+                    highestScoreText.text = score.ToString();
+                }
+
+                if (score >= highestScore)
+                {
+                    PlayerPrefs.SetInt("CodeRunner_HighestScore", score);
+                }
+
+                scoreText.text = score.ToString();
+                timeElapsedText.text = Utils.ConvertToMS(CodeRunnerGameHandler.elapsedTime);
+
+                playerAnimator.SetTrigger("GameOver");
+                roadAnimator.SetTrigger("GameOver");
+                endScreenAnimator.SetTrigger("GameOver");
+
+                answers.SetActive(false);
+
+                playAgainButton.onClick.AddListener(() =>
+                {
+                    DatabaseHandler.IncrementStat("gameXp", score / 10);
+                    DatabaseHandler.IncrementStat("gamesPlayed", 1);
+                    SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+                });
+
+                returnHomeButton.onClick.AddListener(() =>
+                {
+                    endActivityHandler.EndActivity(endActivityHandler.gameObject, RunnerCollision.score / 10, CodeRunnerGameHandler.elapsedTime);
+                });
 
                 //Game Over screen here.
             }

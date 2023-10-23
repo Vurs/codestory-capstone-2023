@@ -5,9 +5,12 @@ using UnityEngine;
 public class CodeRunnerGameHandler : MonoBehaviour
 {
     public static int elapsedTime = 0;
+    public static bool gameOver = false;
 
     private void Start()
     {
+        elapsedTime = 0;
+        gameOver = false;
         StartCoroutine(StartCounter());
     }
 
@@ -16,7 +19,10 @@ public class CodeRunnerGameHandler : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1f);
-            elapsedTime++;
+            if (gameOver == false)
+            {
+                elapsedTime++;
+            }
         }
     }
 }

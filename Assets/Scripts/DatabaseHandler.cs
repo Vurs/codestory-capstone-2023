@@ -341,7 +341,15 @@ public class DatabaseHandler : MonoBehaviour
                     string userId = childSnapshot.Key;
                     if (userId == user.UserId) continue;
 
-                    recentUsers.Add(userId);
+                    DataSnapshot isDiscoverable = childSnapshot.Child("isDiscoverable");
+                    if (isDiscoverable.Exists)
+                    {
+                        bool value = (bool)isDiscoverable.Value;
+                        if (value == true)
+                        {
+                            recentUsers.Add(userId);
+                        }
+                    }
                 }
             }
             else
@@ -416,6 +424,125 @@ public class DatabaseHandler : MonoBehaviour
                     Debug.LogWarning($"Error fetching stat {statName}");
                 }
             });
+        }
+        else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
+    }
+
+    public static void FollowUser(string userId, Action callback = null)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            DatabaseReference rootReference = FirebaseDatabase.DefaultInstance.RootReference;
+            DatabaseReference usersReference = rootReference.Child("users");
+            DatabaseReference userReference = usersReference.Child(user.UserId);
+
+            CheckIfKeyExists(usersReference, userId, (targetExists) =>
+            {
+                if (targetExists)
+                {
+                    DatabaseReference otherUserReference = usersReference.Child(userId);
+
+                    CheckIfKeyExists(userReference.Child("following"), userId, (alreadyFollowing) =>
+                    {
+                        if (!alreadyFollowing)
+                        {
+                            userReference.Child("following").Child(userId).SetValueAsync(userId);
+                            otherUserReference.Child("followers").Child(user.UserId).SetValueAsync(user.UserId);
+                            Debug.Log("Successfully followed user " + userId);
+
+                            if (callback != null)
+                            {
+                                callback.Invoke();
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Error: You're already following that user!");
+                        }
+                    });
+                } else
+                {
+                    Debug.LogError("Error: A user with that userId does not exist!");
+                }
+            });
+        }
+        else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
+    }
+
+    static void CheckIfKeyExists(DatabaseReference parentReference, string key, Action<bool> callback)
+    {
+        parentReference.Child(key).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                DataSnapshot snapshot = task.Result;
+                bool exists = snapshot.Exists;
+                callback(exists);
+            }
+            else
+            {
+                Debug.LogError("Could not complete CheckIfKeyExists operation: " + task.Exception);
+                callback(false);
+            }
+        });
+    }
+
+    public static void FetchDatabaseValue(string databasePathToValue, bool fallbackValue, Action<bool> callback)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            string formattedString = string.Format(databasePathToValue, user.UserId);
+            DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference.Child(formattedString);
+            reference.GetValueAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompleted)
+                {
+                    DataSnapshot snapshot = task.Result;
+                    if (snapshot.Exists)
+                    {
+                        bool value = (bool)snapshot.Value;
+                        callback(value);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("A value at the path of " + formattedString + " does not exist!");
+                        callback(fallbackValue);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Could not complete FetchDatabaseValue operation: " + task.Exception);
+                    callback(fallbackValue);
+                }
+            });
+        } else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
+    }
+
+    public static void SetDatabaseValue(string databasePathToValue, bool value)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            string formattedString = string.Format(databasePathToValue, user.UserId);
+            DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference.Child(formattedString);
+            reference.SetValueAsync(value);
         }
         else
         {

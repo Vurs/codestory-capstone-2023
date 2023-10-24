@@ -15,6 +15,8 @@ public class ProfilePopulator : MonoBehaviour
     public Sprite defaultProfilePicture;
 
     [Header("Home UI")]
+    public GameObject homePage;
+    public GameObject discoverPeople;
     public TMP_Text greetingLabelHome;
     public TMP_Text handleLabelHome;
     public TMP_Text followingFollowersLabelHome;
@@ -140,7 +142,7 @@ public class ProfilePopulator : MonoBehaviour
         }
     }
 
-    IEnumerator GetUserDataCoroutine(string userId, Action callback)
+    public IEnumerator GetUserDataCoroutine(string userId, Action callback)
     {
         Task task = DatabaseHandler.FetchUserInfoByIdAsync(userId);
         yield return new WaitUntil(() => task.IsCompleted);
@@ -244,6 +246,17 @@ public class ProfilePopulator : MonoBehaviour
         profilePage.SetActive(true);
     }
 
+    void OnDiscoverClicked(string userId)
+    {
+        StartCoroutine(GetUserDataCoroutine(userId, () => {
+            PopulateProfile();
+            StartCoroutine(PopulateFollowingFollowers());
+        }));
+
+        homePage.SetActive(false);
+        profilePage.SetActive(true);
+    }
+
     IEnumerator GetMostRecentUsersCoroutine(Action callback)
     {
         Task task = DatabaseHandler.FetchRecentUsersAsync();
@@ -258,37 +271,60 @@ public class ProfilePopulator : MonoBehaviour
     {
         Utils.ClearAllChildren(discoverContainer);
 
-        foreach (string userId in recentUsers)
+        if (recentUsers.Count > 0)
         {
-            bool isCompleted = false;
-
-            StartCoroutine(GetUserDataCoroutine(userId, () =>
+            foreach (string userId in recentUsers)
             {
-                GameObject discoverClone = Instantiate(discoverUserPrefab);
-                GameObject profilePictureHolder = discoverClone.transform.Find("ProfilePicture").gameObject;
-                Image profilePictureImage = profilePictureHolder.transform.Find("Image").gameObject.GetComponent<Image>();
-                TMP_Text displayNameLabel = discoverClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
-                TMP_Text usernameLabel = discoverClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
+                bool isCompleted = false;
 
-                //profilePictureImage.sprite = defaultProfilePicture; // Change this later
-                profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
-                displayNameLabel.text = userInfo.DisplayName;
-                usernameLabel.text = $"@{userInfo.Handle}";
-                discoverClone.transform.SetParent(discoverContainer.transform, false);
+                StartCoroutine(GetUserDataCoroutine(userId, () =>
+                {
+                    GameObject discoverClone = Instantiate(discoverUserPrefab);
+                    GameObject profilePictureHolder = discoverClone.transform.Find("ProfilePicture").gameObject;
+                    Image profilePictureImage = profilePictureHolder.transform.Find("Image").gameObject.GetComponent<Image>();
+                    TMP_Text displayNameLabel = discoverClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
+                    TMP_Text usernameLabel = discoverClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
 
-                Button button = discoverClone.transform.Find("FollowButton").GetComponent<Button>();
-                button.onClick.AddListener(() => { OnFollowClicked(userId); });
+                    //profilePictureImage.sprite = defaultProfilePicture; // Change this later
+                    profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
+                    displayNameLabel.text = userInfo.DisplayName;
+                    usernameLabel.text = $"@{userInfo.Handle}";
+                    discoverClone.transform.SetParent(discoverContainer.transform, false);
 
-                isCompleted = true;
-            }));
+                    Button button = discoverClone.transform.Find("FollowButton").GetComponent<Button>();
+                    button.onClick.AddListener(() => { OnFollowClicked(userId); });
 
-            yield return new WaitUntil(() => isCompleted == true);
+                    Button profileButton = profilePictureHolder.GetComponent<Button>();
+                    profileButton.onClick.AddListener(() => { OnDiscoverClicked(userId); });
+
+                    isCompleted = true;
+                }));
+
+                yield return new WaitUntil(() => isCompleted == true);
+            }
+        } else
+        {
+            discoverPeople.SetActive(false);
         }
     }
 
     void OnFollowClicked(string userId)
     {
-        // Follow code here
-        Debug.Log("Attempting to follow " + userId);
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            Debug.Log("Attempting to follow " + userId);
+            DatabaseHandler.FollowUser(userId, () => {
+                StartCoroutine(GetUserDataCoroutine(user.UserId, () =>
+                {
+                    PopulateHome();
+                }));
+            });
+        } else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
     }
 }

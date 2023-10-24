@@ -40,6 +40,8 @@ public class ToggleSwitch : MonoBehaviour, IPointerDownHandler
 
     public bool defaultValue = false;
     public string playerPrefsKey = "";
+    public bool isDatabaseValue = false;
+    public string databasePathToValue = "";
 
     // Start is called before the first frame update
     void Start()
@@ -47,12 +49,22 @@ public class ToggleSwitch : MonoBehaviour, IPointerDownHandler
         offX = 0; // toggleIndicator.anchoredPosition.x; // Start position
         onX = 58.54258f; // backgroundImage.rectTransform.rect.width - (toggleIndicator.rect.width * 0.775f);
 
-        if (PlayerPrefs.HasKey(playerPrefsKey) == true)
+        if (isDatabaseValue == true)
         {
-            ForceToggle(PlayerPrefs.GetInt(playerPrefsKey) == 1);
+            DatabaseHandler.FetchDatabaseValue(databasePathToValue, true, (boolValue) =>
+            {
+                ForceToggle(boolValue);
+            });
         } else
         {
-            ForceToggle(defaultValue);
+            if (PlayerPrefs.HasKey(playerPrefsKey) == true)
+            {
+                ForceToggle(PlayerPrefs.GetInt(playerPrefsKey) == 1);
+            }
+            else
+            {
+                ForceToggle(defaultValue);
+            }
         }
     }
 
@@ -123,7 +135,14 @@ public class ToggleSwitch : MonoBehaviour, IPointerDownHandler
         Toggle(!isOn, () =>
         {
             int value = isOn == true ? 1 : 0;
-            PlayerPrefs.SetInt(playerPrefsKey, value);
-        }); // Flips the switch when clicked
+
+            if (isDatabaseValue == true)
+            {
+                DatabaseHandler.SetDatabaseValue(databasePathToValue, isOn);
+            } else
+            {
+                PlayerPrefs.SetInt(playerPrefsKey, value);
+            }
+        });
     }
 }

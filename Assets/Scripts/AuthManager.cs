@@ -291,7 +291,9 @@ public class AuthManager : MonoBehaviour
                             { "countryCode", countryCode },
                             { "countryName", countryName },
                             { "creationTimestamp", unixTimestampMillis },
-                            { "isDiscoverable", true }
+                            { "isDiscoverable", true },
+                            { "dailyStreak", 0 },
+                            { "lastActivityCompleted", "0001-01-01T00:00:00" }
                         };
                         rootReference.Child("users").Child(user.UserId).SetValueAsync(userData).ContinueWithOnMainThread(task =>
                         {

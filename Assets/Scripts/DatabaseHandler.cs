@@ -271,6 +271,9 @@ public class DatabaseHandler : MonoBehaviour
                 userInfo.GameTitlesWon = int.Parse(snapshot.Child("gameTitlesWon").Value.ToString());
                 userInfo.CountryCode = snapshot.Child("countryCode").Value.ToString();
                 userInfo.CountryName = snapshot.Child("countryName").Value.ToString();
+                userInfo.IsDiscoverable = (bool)snapshot.Child("isDiscoverable").Value;
+                userInfo.DailyStreak = int.Parse(snapshot.Child("dailyStreak").Value.ToString());
+                userInfo.LastActivityCompleted = snapshot.Child("lastActivityCompleted").Value.ToString();
                 userInfo.Followers = new List<string>();
                 userInfo.Following = new List<string>();
 
@@ -533,7 +536,118 @@ public class DatabaseHandler : MonoBehaviour
         }
     }
 
+    public static void FetchDatabaseValue(string databasePathToValue, int fallbackValue, Action<int> callback)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            string formattedString = string.Format(databasePathToValue, user.UserId);
+            DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference.Child(formattedString);
+            reference.GetValueAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompleted)
+                {
+                    DataSnapshot snapshot = task.Result;
+                    if (snapshot.Exists)
+                    {
+                        string value = snapshot.Value.ToString();
+                        int parsedValue = int.Parse(value);
+                        callback(parsedValue);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("A value at the path of " + formattedString + " does not exist!");
+                        callback(fallbackValue);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Could not complete FetchDatabaseValue operation: " + task.Exception);
+                    callback(fallbackValue);
+                }
+            });
+        }
+        else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
+    }
+
+    public static void FetchDatabaseValue(string databasePathToValue, string fallbackValue, Action<string> callback)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            string formattedString = string.Format(databasePathToValue, user.UserId);
+            DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference.Child(formattedString);
+            reference.GetValueAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompleted)
+                {
+                    DataSnapshot snapshot = task.Result;
+                    if (snapshot.Exists)
+                    {
+                        string value = snapshot.Value.ToString();
+                        callback(value);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("A value at the path of " + formattedString + " does not exist!");
+                        callback(fallbackValue);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Could not complete FetchDatabaseValue operation: " + task.Exception);
+                    callback(fallbackValue);
+                }
+            });
+        }
+        else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
+    }
+
     public static void SetDatabaseValue(string databasePathToValue, bool value)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            string formattedString = string.Format(databasePathToValue, user.UserId);
+            DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference.Child(formattedString);
+            reference.SetValueAsync(value);
+        }
+        else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
+    }
+
+    public static void SetDatabaseValue(string databasePathToValue, string value)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            string formattedString = string.Format(databasePathToValue, user.UserId);
+            DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference.Child(formattedString);
+            reference.SetValueAsync(value);
+        }
+        else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
+    }
+
+    public static void SetDatabaseValue(string databasePathToValue, int value)
     {
         FirebaseAuth auth = FirebaseAuth.DefaultInstance;
         FirebaseUser user = auth.CurrentUser;

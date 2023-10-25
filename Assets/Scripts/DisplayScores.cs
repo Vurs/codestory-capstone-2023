@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class DisplayScores : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class DisplayScores : MonoBehaviour
     public GameObject endGameStoryPage;
     public TMP_Text elapsedTimeText;
     public TMP_Text xpText;
+    public GameObject streakPanel;
+    public Animator dailyStreakAnimator;
+    public TMP_Text oldStreakText;
+    public TMP_Text newStreakText;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +31,8 @@ public class DisplayScores : MonoBehaviour
             endGameStoryPage.SetActive(true);
 
             Destroy(endActivityHandler);
+
+            DailyStreakHandler.IncrementStreakIfApplicable(streakPanel, dailyStreakAnimator, oldStreakText, newStreakText);
         }
     }
 }

@@ -10,6 +10,8 @@ public class TransitionToDifferentPage : MonoBehaviour
     public GameObject bottomBar;
     public GameObject newSelectedTab;
     public GameObject[] allTabs;
+    public bool isStreakPanel = false;
+    public Animator streakAnimator;
 
     public void Segue()
     {
@@ -19,6 +21,14 @@ public class TransitionToDifferentPage : MonoBehaviour
         if (bottomBar != null)
         {
             bottomBar.SetActive(true);
+        }
+
+        if (isStreakPanel == true)
+        {
+            if (streakAnimator != null)
+            {
+                streakAnimator.SetBool("DailyStreakActivated", false);
+            }
         }
     }
 

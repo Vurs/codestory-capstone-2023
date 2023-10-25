@@ -96,7 +96,7 @@ public class ProfilePopulator : MonoBehaviour
         greetingLabelHome.text = $"Hello, {userInfo.DisplayName}!";
         handleLabelHome.text = $"@{userInfo.Handle}";
         followingFollowersLabelHome.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
-        dailyStreakLabelHome.text = "0"; // Change this later
+        dailyStreakLabelHome.text = userInfo.DailyStreak.ToString(); // Change this later
         totalXpLabelHome.text = Utils.ConvertToShorthand(userInfo.StoryXp + userInfo.GameXp);
         totalTitlesLabelHome.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
         profilePictureManager.SetImage(profilePictureHome, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
@@ -111,7 +111,7 @@ public class ProfilePopulator : MonoBehaviour
         StartCoroutine(Utils.LoadFlagImageCoroutine(countryImageProfile, userInfo.CountryCode));
         lastActiveLabelProfile.text = "Last Active: Just now"; // Change this later
         followingFollowersLabelProfile.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
-        dailyStreakLabelProfile.text = "0"; // Change this later
+        dailyStreakLabelProfile.text = userInfo.DailyStreak.ToString(); // Change this later
         totalXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoryXp + userInfo.GameXp);
         totalTitlesLabelProfile.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
         storiesReadLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoriesRead);

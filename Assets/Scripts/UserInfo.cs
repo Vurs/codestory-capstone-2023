@@ -20,4 +20,7 @@ public class UserInfo
     public int GameTitlesWon { get; set; }
     public string CountryCode { get; set; }
     public string CountryName { get; set; }
+    public bool IsDiscoverable { get; set; }
+    public int DailyStreak { get; set; }
+    public string LastActivityCompleted {  get; set; }
 }

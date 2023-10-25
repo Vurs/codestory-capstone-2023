@@ -31,7 +31,7 @@ public class DailyStreakHandler : MonoBehaviour
         });
     }
 
-    public static void IncrementStreakIfApplicable(GameObject streakPanel, Animator animator, TMP_Text oldStreakText, TMP_Text newStreakText)
+    public static void IncrementStreakIfApplicable(GameObject streakPanel, Animator animator, TMP_Text oldStreakText, TMP_Text newStreakText, TMP_Text congratsText)
     {
         string currentDateString = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
         string fallbackDateString = new DateTime(1, 1, 1).ToString("yyyy-MM-ddTHH:mm:ss");
@@ -52,6 +52,7 @@ public class DailyStreakHandler : MonoBehaviour
 
                     oldStreakText.text = value.ToString();
                     newStreakText.text = (value + 1).ToString();
+                    congratsText.text = "Congrats on keeping your streak alive!";
                     streakPanel.SetActive(true);
                     animator.SetBool("DailyStreakActivated", true);
                 });
@@ -65,6 +66,7 @@ public class DailyStreakHandler : MonoBehaviour
 
                 oldStreakText.text = "0";
                 newStreakText.text = "1";
+                congratsText.text = "Congrats on starting a new streak! Keep it up!";
                 streakPanel.SetActive(true);
                 animator.SetBool("DailyStreakActivated", true);
             } else

@@ -119,11 +119,8 @@ public class SettingsHandler : MonoBehaviour
 
         if (user != null)
         {
-            StartCoroutine(profilePopulator.GetUserDataCoroutine(user.UserId, () =>
-            {
-                profilePopulator.PopulateHome();
-                Debug.Log("Called");
-            }));
+            profilePopulator.RepopulateHome();
+            Debug.Log("Saved settings successfully");
         }
     }
 

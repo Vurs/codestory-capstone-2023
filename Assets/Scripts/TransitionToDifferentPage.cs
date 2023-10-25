@@ -12,6 +12,7 @@ public class TransitionToDifferentPage : MonoBehaviour
     public GameObject[] allTabs;
     public bool isStreakPanel = false;
     public Animator streakAnimator;
+    public ProfilePopulator populator;
 
     public void Segue()
     {
@@ -28,6 +29,7 @@ public class TransitionToDifferentPage : MonoBehaviour
             if (streakAnimator != null)
             {
                 streakAnimator.SetBool("DailyStreakActivated", false);
+                populator.RepopulateHome();
             }
         }
     }

@@ -15,6 +15,7 @@ public class DisplayScores : MonoBehaviour
     public Animator dailyStreakAnimator;
     public TMP_Text oldStreakText;
     public TMP_Text newStreakText;
+    public TMP_Text congratsText;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +33,7 @@ public class DisplayScores : MonoBehaviour
 
             Destroy(endActivityHandler);
 
-            DailyStreakHandler.IncrementStreakIfApplicable(streakPanel, dailyStreakAnimator, oldStreakText, newStreakText);
+            DailyStreakHandler.IncrementStreakIfApplicable(streakPanel, dailyStreakAnimator, oldStreakText, newStreakText, congratsText);
         }
     }
 }

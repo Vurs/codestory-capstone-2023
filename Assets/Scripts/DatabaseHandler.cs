@@ -271,9 +271,9 @@ public class DatabaseHandler : MonoBehaviour
                 userInfo.GameTitlesWon = int.Parse(snapshot.Child("gameTitlesWon").Value.ToString());
                 userInfo.CountryCode = snapshot.Child("countryCode").Value.ToString();
                 userInfo.CountryName = snapshot.Child("countryName").Value.ToString();
-                userInfo.IsDiscoverable = (bool)snapshot.Child("isDiscoverable").Value;
-                userInfo.DailyStreak = int.Parse(snapshot.Child("dailyStreak").Value.ToString());
-                userInfo.LastActivityCompleted = snapshot.Child("lastActivityCompleted").Value.ToString();
+                userInfo.IsDiscoverable = (bool)(snapshot.Child("isDiscoverable").Value ?? true);
+                userInfo.DailyStreak = int.Parse((snapshot.Child("dailyStreak").Value ?? 0).ToString());
+                userInfo.LastActivityCompleted = (snapshot.Child("lastActivityCompleted").Value ?? "0001-01-01T00:00:00").ToString();
                 userInfo.Followers = new List<string>();
                 userInfo.Following = new List<string>();
 

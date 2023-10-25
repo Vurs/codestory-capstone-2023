@@ -102,6 +102,19 @@ public class ProfilePopulator : MonoBehaviour
         profilePictureManager.SetImage(profilePictureHome, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
     }
 
+    public void RepopulateHome()
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            StartCoroutine(GetUserDataCoroutine(user.UserId, () => {
+                PopulateHome();
+            }));
+        }
+    }
+
     public void PopulateProfile()
     {
         displayNameLabelProfile.text = userInfo.DisplayName;

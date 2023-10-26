@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -85,5 +86,40 @@ public class Utils : MonoBehaviour
     public static string FormatWithCommas(int input)
     {
         return input.ToString("N0");
+    }
+
+    public static string FormatTimeAgo(long unixTimestampMilliseconds)
+    {
+        DateTime currentTime = DateTime.UtcNow;
+        DateTime targetTime = DateTimeOffset.FromUnixTimeMilliseconds(unixTimestampMilliseconds).UtcDateTime;
+
+        TimeSpan timeDifference = currentTime - targetTime;
+
+        if (timeDifference.TotalMinutes <= 5)
+        {
+            return "Just now";
+        }
+        if (timeDifference.TotalDays >= 1)
+        {
+            int daysAgo = (int)timeDifference.TotalDays;
+            return $"{daysAgo} {(daysAgo == 1 ? "day" : "days")} ago";
+        }
+        if (timeDifference.TotalHours >= 1)
+        {
+            int hoursAgo = (int)timeDifference.TotalHours;
+            return $"{hoursAgo} {(hoursAgo == 1 ? "hour" : "hours")} ago";
+        }
+        if (timeDifference.TotalMinutes >= 1)
+        {
+            int minutesAgo = (int)timeDifference.TotalMinutes;
+            return $"{minutesAgo} {(minutesAgo == 1 ? "minute" : "minutes")} ago";
+        }
+        if (timeDifference.TotalSeconds >= 1)
+        {
+            int secondsAgo = (int)timeDifference.TotalSeconds;
+            return $"{secondsAgo} {(secondsAgo == 1 ? "second" : "seconds")} ago";
+        }
+
+        return "Just now";
     }
 }

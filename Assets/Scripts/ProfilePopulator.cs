@@ -96,7 +96,7 @@ public class ProfilePopulator : MonoBehaviour
         greetingLabelHome.text = $"Hello, {userInfo.DisplayName}!";
         handleLabelHome.text = $"@{userInfo.Handle}";
         followingFollowersLabelHome.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
-        dailyStreakLabelHome.text = userInfo.DailyStreak.ToString(); // Change this later
+        dailyStreakLabelHome.text = userInfo.DailyStreak.ToString();
         totalXpLabelHome.text = Utils.ConvertToShorthand(userInfo.StoryXp + userInfo.GameXp);
         totalTitlesLabelHome.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
         profilePictureManager.SetImage(profilePictureHome, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
@@ -117,24 +117,29 @@ public class ProfilePopulator : MonoBehaviour
 
     public void PopulateProfile()
     {
-        displayNameLabelProfile.text = userInfo.DisplayName;
-        handleLabelProfile.text = $"@{userInfo.Handle}";
-        titleLabelProfile.text = userInfo.Title;
-        countryLabelProfile.text = userInfo.CountryName;
-        StartCoroutine(Utils.LoadFlagImageCoroutine(countryImageProfile, userInfo.CountryCode));
-        lastActiveLabelProfile.text = "Last Active: Just now"; // Change this later
-        followingFollowersLabelProfile.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
-        dailyStreakLabelProfile.text = userInfo.DailyStreak.ToString(); // Change this later
-        totalXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoryXp + userInfo.GameXp);
-        totalTitlesLabelProfile.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
-        storiesReadLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoriesRead);
-        storyXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoryXp);
-        storyTitlesLabelProfile.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon);
-        gamesPlayedLabelProfile.text = Utils.ConvertToShorthand(userInfo.GamesPlayed);
-        gameXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.GameXp);
-        gameTitlesWonProfile.text = Utils.FormatWithCommas(userInfo.GameTitlesWon);
-        //profilePictureProfile.sprite = defaultProfilePicture; // Change this later
-        profilePictureManager.SetImage(profilePictureProfile, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            displayNameLabelProfile.text = userInfo.DisplayName;
+            handleLabelProfile.text = $"@{userInfo.Handle}";
+            titleLabelProfile.text = userInfo.Title;
+            countryLabelProfile.text = userInfo.CountryName;
+            StartCoroutine(Utils.LoadFlagImageCoroutine(countryImageProfile, userInfo.CountryCode));
+            lastActiveLabelProfile.text = userInfo.UserId == user.UserId ? "Last Active: Just now" : "Last Active: " + Utils.FormatTimeAgo(userInfo.LastSignIn);
+            followingFollowersLabelProfile.text = $"<b>{Utils.FormatWithCommas(userInfo.Following.Count)}</b> Following   <b>{Utils.FormatWithCommas(userInfo.Followers.Count)}</b> Followers";
+            dailyStreakLabelProfile.text = userInfo.DailyStreak.ToString();
+            totalXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoryXp + userInfo.GameXp);
+            totalTitlesLabelProfile.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon + userInfo.GameTitlesWon);
+            storiesReadLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoriesRead);
+            storyXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.StoryXp);
+            storyTitlesLabelProfile.text = Utils.FormatWithCommas(userInfo.StoryTitlesWon);
+            gamesPlayedLabelProfile.text = Utils.ConvertToShorthand(userInfo.GamesPlayed);
+            gameXpLabelProfile.text = Utils.ConvertToShorthand(userInfo.GameXp);
+            gameTitlesWonProfile.text = Utils.FormatWithCommas(userInfo.GameTitlesWon);
+            profilePictureManager.SetImage(profilePictureProfile, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
+        }
     }
 
     public void PopulateOwnProfile()
@@ -200,7 +205,6 @@ public class ProfilePopulator : MonoBehaviour
                 TMP_Text displayNameLabel = followingClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
                 TMP_Text usernameLabel = followingClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
 
-                //profilePictureImage.sprite = defaultProfilePicture; // Change this later
                 profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
                 displayNameLabel.text = userInfo.DisplayName;
                 usernameLabel.text = $"@{userInfo.Handle}";
@@ -227,7 +231,6 @@ public class ProfilePopulator : MonoBehaviour
                 TMP_Text displayNameLabel = followerClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
                 TMP_Text usernameLabel = followerClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
 
-                //profilePictureImage.sprite = defaultProfilePicture; // Change this later
                 profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
                 displayNameLabel.text = userInfo.DisplayName;
                 usernameLabel.text = $"@{userInfo.Handle}";
@@ -298,7 +301,6 @@ public class ProfilePopulator : MonoBehaviour
                     TMP_Text displayNameLabel = discoverClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
                     TMP_Text usernameLabel = discoverClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
 
-                    //profilePictureImage.sprite = defaultProfilePicture; // Change this later
                     profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
                     displayNameLabel.text = userInfo.DisplayName;
                     usernameLabel.text = $"@{userInfo.Handle}";

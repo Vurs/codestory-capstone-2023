@@ -44,6 +44,7 @@ public class ProfilePopulator : MonoBehaviour
     public TMP_Text gameXpLabelProfile;
     public TMP_Text gameTitlesWonProfile;
     public Image profilePictureProfile;
+    public GameObject followUnfollowButton;
 
     [Header("Following/Followers UI")]
     public GameObject followingFollowersPage;
@@ -57,6 +58,7 @@ public class ProfilePopulator : MonoBehaviour
     public TMP_Text currentUserDisplayNameFF;
 
     public UserInfo userInfo;
+    public UserInfo currentlyViewedUser;
 
     private List<string> recentUsers;
     public GameObject discoverUserPrefab;
@@ -122,6 +124,29 @@ public class ProfilePopulator : MonoBehaviour
 
         if (user != null)
         {
+            currentlyViewedUser = userInfo;
+
+            if (user.UserId == userInfo.UserId)
+            {
+                followUnfollowButton.SetActive(false);
+            } else
+            {
+                DatabaseHandler.FetchDatabaseValue("users/{0}/following/" + userInfo.UserId, "", (value) =>
+                {
+                    TMP_Text buttonText = followUnfollowButton.transform.Find("Text (TMP)").GetComponent<TMP_Text>();
+
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        buttonText.text = "Unfollow";
+                    } else
+                    {
+                        buttonText.text = "Follow";
+                    }
+
+                    followUnfollowButton.SetActive(true);
+                });
+            }
+
             displayNameLabelProfile.text = userInfo.DisplayName;
             handleLabelProfile.text = $"@{userInfo.Handle}";
             titleLabelProfile.text = userInfo.Title;
@@ -285,41 +310,58 @@ public class ProfilePopulator : MonoBehaviour
 
     IEnumerator PopulateDiscoverUsers()
     {
-        Utils.ClearAllChildren(discoverContainer);
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
 
-        if (recentUsers.Count > 0)
+        if (user != null)
         {
-            foreach (string userId in recentUsers)
+            Utils.ClearAllChildren(discoverContainer);
+
+            if (recentUsers.Count > 0)
             {
-                bool isCompleted = false;
-
-                StartCoroutine(GetUserDataCoroutine(userId, () =>
+                foreach (string userId in recentUsers)
                 {
-                    GameObject discoverClone = Instantiate(discoverUserPrefab);
-                    GameObject profilePictureHolder = discoverClone.transform.Find("ProfilePicture").gameObject;
-                    Image profilePictureImage = profilePictureHolder.transform.Find("Image").gameObject.GetComponent<Image>();
-                    TMP_Text displayNameLabel = discoverClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
-                    TMP_Text usernameLabel = discoverClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
+                    bool isCompleted = false;
 
-                    profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
-                    displayNameLabel.text = userInfo.DisplayName;
-                    usernameLabel.text = $"@{userInfo.Handle}";
+                    StartCoroutine(GetUserDataCoroutine(userId, () =>
+                    {
+                        GameObject discoverClone = Instantiate(discoverUserPrefab);
+                        GameObject profilePictureHolder = discoverClone.transform.Find("ProfilePicture").gameObject;
+                        Image profilePictureImage = profilePictureHolder.transform.Find("Image").gameObject.GetComponent<Image>();
+                        TMP_Text displayNameLabel = discoverClone.transform.Find("DisplayName").gameObject.GetComponent<TMP_Text>();
+                        TMP_Text usernameLabel = discoverClone.transform.Find("Username").gameObject.GetComponent<TMP_Text>();
+                        TMP_Text followButtonText = discoverClone.transform.Find("FollowButton").Find("Text (TMP)").GetComponent<TMP_Text>();
+
+                        profilePictureManager.SetImage(profilePictureImage, profilePictureManager.profilePictures["pfp_" + userInfo.ProfilePicture.ToString("D3")]);
+                        displayNameLabel.text = userInfo.DisplayName;
+                        usernameLabel.text = $"@{userInfo.Handle}";
+
+                        DatabaseHandler.FetchDatabaseValue("users/{0}/following/" + userId, "", (value) =>
+                        {
+                            if (!string.IsNullOrEmpty(value))
+                            {
+                                followButtonText.text = "Following";
+                            }
+                        });
+    
                     discoverClone.transform.SetParent(discoverContainer.transform, false);
 
-                    Button button = discoverClone.transform.Find("FollowButton").GetComponent<Button>();
-                    button.onClick.AddListener(() => { OnFollowClicked(userId); });
+                        Button button = discoverClone.transform.Find("FollowButton").GetComponent<Button>();
+                        button.onClick.AddListener(() => { OnFollowClicked(userId); });
 
-                    Button profileButton = profilePictureHolder.GetComponent<Button>();
-                    profileButton.onClick.AddListener(() => { OnDiscoverClicked(userId); });
+                        Button profileButton = profilePictureHolder.GetComponent<Button>();
+                        profileButton.onClick.AddListener(() => { OnDiscoverClicked(userId); });
 
-                    isCompleted = true;
-                }));
+                        isCompleted = true;
+                    }));
 
-                yield return new WaitUntil(() => isCompleted == true);
+                    yield return new WaitUntil(() => isCompleted == true);
+                }
             }
-        } else
-        {
-            discoverPeople.SetActive(false);
+            else
+            {
+                discoverPeople.SetActive(false);
+            }
         }
     }
 
@@ -335,9 +377,74 @@ public class ProfilePopulator : MonoBehaviour
                 StartCoroutine(GetUserDataCoroutine(user.UserId, () =>
                 {
                     PopulateHome();
+                    StartCoroutine(PopulateDiscoverUsers());
                 }));
             });
         } else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
+    }
+
+    public void OnFollowUnfollowButtonClicked()
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            if (currentlyViewedUser.UserId == user.UserId)
+            {
+                Debug.LogWarning("Called follow/unfollow on self, aborting");
+                return;
+            }
+
+            DatabaseHandler.FetchDatabaseValue("users/{0}/following/" + currentlyViewedUser.UserId, "", (value) =>
+            {
+                TMP_Text buttonText = followUnfollowButton.transform.Find("Text (TMP)").GetComponent<TMP_Text>();
+
+                if (!string.IsNullOrEmpty(value))
+                {
+                    Debug.Log("Attempting to unfollow " + currentlyViewedUser.UserId);
+                    DatabaseHandler.RemoveDatabaseValue("users/{0}/following/" + currentlyViewedUser.UserId);
+                    DatabaseHandler.RemoveDatabaseValue("users/" + currentlyViewedUser.UserId + "/followers/" + user.UserId);
+
+                    StartCoroutine(GetUserDataCoroutine(currentlyViewedUser.UserId, () =>
+                    {
+                        PopulateProfile();
+                        StartCoroutine(PopulateFollowingFollowers(() =>
+                        {
+                            StartCoroutine(GetUserDataCoroutine(user.UserId, () =>
+                            {
+                                buttonText.text = "Follow";
+                                PopulateHome();
+                                StartCoroutine(PopulateDiscoverUsers());
+                            }));
+                        }));
+                    }));
+                } else
+                {
+                    Debug.Log("Attempting to follow " + userInfo.UserId);
+
+                    DatabaseHandler.FollowUser(currentlyViewedUser.UserId, () => {
+                        StartCoroutine(GetUserDataCoroutine(currentlyViewedUser.UserId, () =>
+                        {
+                            PopulateProfile();
+                            StartCoroutine(PopulateFollowingFollowers(() =>
+                            {
+                                StartCoroutine(GetUserDataCoroutine(user.UserId, () =>
+                                {
+                                    buttonText.text = "Unfollow";
+                                    PopulateHome();
+                                    StartCoroutine(PopulateDiscoverUsers());
+                                }));
+                            }));
+                        }));
+                    });
+                }
+            });
+        }
+        else
         {
             Debug.LogError("No user is currently authenticated.");
         }

@@ -84,6 +84,16 @@ public class ActivityPopulator : MonoBehaviour
             GameObject title = activityClone.transform.Find("Title").gameObject;
             TMP_Text titleText = title.GetComponent<TMP_Text>();
             titleText.text = story.GetName();
+
+            Texture2D texture = Resources.Load<Texture2D>($"{story.GetCodeName()}_Art");
+            if (texture != null)
+            {
+                Image image = activityClone.transform.Find("Image").GetComponent<Image>();
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
+                image.sprite = sprite;
+                image.color = Color.white;
+            }
+
             activityClone.transform.SetParent(parent.transform, false);
 
             Button button = activityClone.GetComponent<Button>();
@@ -99,6 +109,16 @@ public class ActivityPopulator : MonoBehaviour
             GameObject title = activityClone.transform.Find("Title").gameObject;
             TMP_Text titleText = title.GetComponent<TMP_Text>();
             titleText.text = minigame.GetName();
+
+            Texture2D texture = Resources.Load<Texture2D>($"{minigame.GetCodeName()}_Art");
+            if (texture != null)
+            {
+                Image image = activityClone.transform.Find("Image").GetComponent<Image>();
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
+                image.sprite = sprite;
+                image.color = Color.white;
+            }
+            
             activityClone.transform.SetParent(parent.transform, false);
 
             Button button = activityClone.GetComponent<Button>();

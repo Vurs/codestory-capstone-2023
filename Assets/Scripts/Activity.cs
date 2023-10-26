@@ -15,6 +15,7 @@ public abstract class Activity
 
     protected string name;
     protected string description;
+    protected string codeName;
     protected ActivityType activityType;
 
     public void OnClick()
@@ -37,9 +38,16 @@ public abstract class Activity
         nameText.text = name;
         descriptionText.text = description;
 
-        playButton.onClick.AddListener(OnPlayClick);
+        Texture2D texture = Resources.Load<Texture2D>($"{codeName}_Art");
+        if (texture != null)
+        {
+            Image bannerImage = gameStoryPage.transform.Find("BannerImage").GetComponent<Image>();
+            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
+            bannerImage.sprite = sprite;
+            bannerImage.color = Color.white;
+        }
 
-        // In the future when graphics are made, set the BannerImage as well
+        playButton.onClick.AddListener(OnPlayClick);
     }
 
     void OnPlayClick()
@@ -51,6 +59,7 @@ public abstract class Activity
         {
             // In the future, make a separate Scene for every story and call them by their codenames
             SceneManager.LoadSceneAsync("StoryScene");
+            // When we add more stories we can do SceneManager.LoadSceneAsync(codeName);
         }
     }
 
@@ -62,5 +71,10 @@ public abstract class Activity
     public string GetDescription()
     {
         return description;
+    }
+
+    public string GetCodeName()
+    {
+        return codeName;
     }
 }

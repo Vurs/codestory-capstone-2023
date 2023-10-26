@@ -43,13 +43,15 @@ public class DatabaseHandler : MonoBehaviour
 
                         DataSnapshot nameSnapshot = minigameSnapshot.Child("Name");
                         DataSnapshot descriptionSnapshot = minigameSnapshot.Child("Description");
+                        DataSnapshot codeNameSnapshot = minigameSnapshot.Child("CodeName");
 
                         string nameValue = nameSnapshot?.Value?.ToString() ?? "undefined";
                         string descriptionValue = descriptionSnapshot?.Value?.ToString() ?? "undefined";
+                        string codeNameValue = codeNameSnapshot?.Value?.ToString() ?? "undefined";
 
                         // Handle the minigame data as needed
                         //Debug.Log($"Added minigame {nameValue}");
-                        Minigame minigame = new Minigame(nameValue, descriptionValue, Activity.ActivityType.Minigame);
+                        Minigame minigame = new Minigame(nameValue, descriptionValue, codeNameValue, Activity.ActivityType.Minigame);
                         minigames.Add(minigame);
                     }
                 }
@@ -101,13 +103,15 @@ public class DatabaseHandler : MonoBehaviour
 
                         DataSnapshot nameSnapshot = storySnapshot.Child("Name");
                         DataSnapshot descriptionSnapshot = storySnapshot.Child("Description");
+                        DataSnapshot codeNameSnapshot = storySnapshot.Child("CodeName");
 
                         string nameValue = nameSnapshot?.Value?.ToString() ?? "undefined";
                         string descriptionValue = descriptionSnapshot?.Value?.ToString() ?? "undefined";
+                        string codeNameValue = codeNameSnapshot?.Value?.ToString() ?? "undefined";
 
                         // Handle the story data as needed
                         //Debug.Log($"Added story {nameValue}");
-                        Story story = new Story(nameValue, descriptionValue, Activity.ActivityType.Story);
+                        Story story = new Story(nameValue, descriptionValue, codeNameValue, Activity.ActivityType.Story);
                         stories.Add(story);
                     }
                 }
@@ -657,6 +661,23 @@ public class DatabaseHandler : MonoBehaviour
             string formattedString = string.Format(databasePathToValue, user.UserId);
             DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference.Child(formattedString);
             reference.SetValueAsync(value);
+        }
+        else
+        {
+            Debug.LogError("No user is currently authenticated.");
+        }
+    }
+
+    public static void RemoveDatabaseValue(string databasePathToValue)
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        FirebaseUser user = auth.CurrentUser;
+
+        if (user != null)
+        {
+            string formattedString = string.Format(databasePathToValue, user.UserId);
+            DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference.Child(formattedString);
+            reference.RemoveValueAsync();
         }
         else
         {

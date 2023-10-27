@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -31,7 +32,7 @@ public class DailyStreakHandler : MonoBehaviour
         });
     }
 
-    public static void IncrementStreakIfApplicable(GameObject streakPanel, Animator animator, TMP_Text oldStreakText, TMP_Text newStreakText, TMP_Text congratsText)
+    public static void IncrementStreakIfApplicable(GameObject streakPanel, Animator animator, TMP_Text oldStreakText, TMP_Text newStreakText, TMP_Text congratsText, CheckDailyStreak dailyStreakChecker)
     {
         string currentDateString = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
         string fallbackDateString = new DateTime(1, 1, 1).ToString("yyyy-MM-ddTHH:mm:ss");
@@ -55,6 +56,7 @@ public class DailyStreakHandler : MonoBehaviour
                     congratsText.text = "Congrats on keeping your streak alive!";
                     streakPanel.SetActive(true);
                     animator.SetBool("DailyStreakActivated", true);
+                    dailyStreakChecker.PlaySuccessSound();
                 });
             }
             else if (lastActivityCompletedDateTime.Date < currentDateTime.Date.AddDays(-1))
@@ -69,6 +71,7 @@ public class DailyStreakHandler : MonoBehaviour
                 congratsText.text = "Congrats on starting a new streak! Keep it up!";
                 streakPanel.SetActive(true);
                 animator.SetBool("DailyStreakActivated", true);
+                dailyStreakChecker.PlaySuccessSound();
             } else
             {
                 Debug.Log("Last activity was completed today, leaving dailyStreak as is");

@@ -36,31 +36,33 @@ public class ScriptChanger : MonoBehaviour
 
     public NPCImageHandler npcImageHandler;
 
+    public SFXHandler sfxHandler;
+
     private int textPosition = 0;
 
-    string[] script = { "Good morning agent, at precisely o hundred hours today, the US president was kidnapped by traitor agents.",
-        "We received intel that Doctor Exception is the mastermind behind the recent kidnapping of the president",
-        "and has left a series of cryptic coding questions behind.",
-        "We believe once these questions are solved, it will lead us to the location of the president.",
-        "As our best agent, we need you to rescue the president and bring Doctor Exception and his agents to justice.",
-        "Good luck agent over and out.",
-        "Greetings Agent, my name is Doctor Method and I am the lead scientist of the OOP agency",
-        "I've been tasked with helping you through these puzzles to save the president from that vile Doctor Exception. Lets look at the first one now",
-        "Ahh that tricky Doctor Exception, this line of code is creating what's known as a variable",
-        "Variables allow us to assign numeric or String values into a placeholder using the assignment (=) operator",
-        "This placeholder is known as a variable and can be whatever name you want it to be",
+    string[] script = { "Good morning agent, at precisely o hundred hours today, the US President was kidnapped by traitor agents.",
+        "We received intel that Doctor Exception is the mastermind behind the recent kidnapping of the President.",
+        "Not only that, but he's also left a series of cryptic coding questions behind.",
+        "We believe once these questions are solved, it will lead us to the location of the President.",
+        "As our best agent, we need you to rescue the President and bring Doctor Exception and his agents to justice.",
+        "Good luck agent, over and out.",
+        "Greetings Agent, my name is Doctor Method and I am the lead scientist of the OOP Agency",
+        "I've been tasked with helping you through these puzzles to save the President from that vile Doctor Exception. Let's look at the first one now.",
+        "Ahh that tricky Doctor Exception, this line of code is creating what's known as a variable.",
+        "Variables allow us to assign numeric or String values into a placeholder using the assignment (=) operator.",
+        "This placeholder is known as a variable and can be whatever name you want it to be.",
         "We can then use that variable throughout the program. But a very important part is missing. Primitive Data Types.",
-        "Primitive Data Types allow us to specify what data type a variable will hold in Java and go before the variable name",
-        "The major data types are int which hold whole numbers, double for decimal numbers, and String for strings or words/sentences",
-        @"Note String needs to be written with a capital s and need to have double quotes around the word eg: String word = ""hello"";",
+        "Primitive Data Types allow us to specify what data type a variable will hold in Java and go before the variable name.",
+        "The major data types are int which hold whole numbers, double for decimal numbers, and String for strings or words/sentences.",
+        @"Note that the word String needs to be written with a capital s and needs to have double quotes around the word eg: String word = ""hello"";",
         "An example of creating an int variable will be as follows: int num = 10;",
         "Lastly, an example of creating a double variable will be: double doubleNum = 5.4;",
         "With all this being said, solve the coding question below. Good luck agent.",
         "Great work, agent! Wait... what's this?",
-        "Oh my god, looks like Dr. Exception wants $2000.75 in 48 hours in exchange for the president, and the swap is to take place at 404 Overflow drive at 6:00pm.",
-        "YA RIGHT! WE’RE GETTING THE PRESIDENT BACK WITHOUT PAYING ANYTHING!",
+        "Oh my god, looks like Dr. Exception wants $2000.75 in 48 hours in exchange for the President, and the swap is to take place at 404 Overflow drive at 6:00pm.",
+        "Yeah right... We'll be getting him back without paying a dime.",
         "Um ahem…. Great work agent, we’ll get this information back to the boss.",
-        "Hmmmmm…. I wonder what the .75 is for, so randomly specific……Oh uh… Over and out.",
+        "Hmmmmm…. I wonder what the .75 is for, so randomly specific…… Nonetheless, over and out.",
         "Later on...",
         "Welcome back, agent. My name is Miss Sentinel. I hear you did a great job at decoding the coding question left behind by Doctor Exception and his mercenaries.",
         "I've been sent here to report that there's more that needs to be done if we want to get the President back in one piece.",
@@ -309,6 +311,7 @@ public class ScriptChanger : MonoBehaviour
 
         if (correct == true)
         {
+            SFXHandler.PlaySound(sfxHandler.success);
             Debug.Log("Congrats, you got it!");
 
             if (textPosition == 0)

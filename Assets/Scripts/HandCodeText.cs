@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HandCodeText : MonoBehaviour
@@ -26,6 +27,15 @@ public class HandCodeText : MonoBehaviour
     private int instructionIterator = 0;
     private String questionType = "";
     private bool shouldIterate = false;
+
+    public TMP_Text scoreText;
+    public TMP_Text timeElapsedText;
+    public TMP_Text highestScoreText;
+    public Animator endScreenAnimator;
+    public Button playAgainButton;
+    public Button returnHomeButton;
+    public EndActivityHandler endActivityHandler;
+    public SFXHandler sfxHandler;
 
     // Start is called before the first frame update
     void Start()
@@ -119,6 +129,7 @@ public class HandCodeText : MonoBehaviour
                 }
                 else if (inputCode.text.Contains(answers[instructionIterator]))
                 {
+                    SFXHandler.PlaySound(sfxHandler.success);
                     Debug.Log("Success!");
                     PresentPopUp("Success!", "Great work!", true);
                 }
@@ -137,6 +148,7 @@ public class HandCodeText : MonoBehaviour
 
                 if (inputCode.text.Contains(@"""" +answers[instructionIterator]+@"""")) //Checks if the message is surrounded by double quotes
                 {
+                    SFXHandler.PlaySound(sfxHandler.success);
                     Debug.Log("Success!");
                     PresentPopUp("Success!", "Great work!", true);
                 }
@@ -159,6 +171,7 @@ public class HandCodeText : MonoBehaviour
                 }
                 else if (inputCode.text.Contains(answers[instructionIterator]))
                 {
+                    SFXHandler.PlaySound(sfxHandler.success);
                     Debug.Log("Success!");
                     PresentPopUp("Success!", "Great work!", true);
                 }
@@ -181,6 +194,25 @@ public class HandCodeText : MonoBehaviour
             Debug.Log("Here");
             PresentPopUp("Congratulations!", "You finished the level!", false);
 
+            CodeEnvironmentHandler.gameOver = true;
+            scoreText.text = "10,000";
+            timeElapsedText.text = Utils.ConvertToMS(CodeEnvironmentHandler.elapsedTime);
+            highestScoreText.text = "10,000";
+
+            endScreenAnimator.gameObject.SetActive(true);
+            endScreenAnimator.SetTrigger("GameOver");
+
+            playAgainButton.onClick.AddListener(() =>
+            {
+                DatabaseHandler.IncrementStat("gameXp", 1000);
+                DatabaseHandler.IncrementStat("gamesPlayed", 1);
+                SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+            });
+
+            returnHomeButton.onClick.AddListener(() =>
+            {
+                endActivityHandler.EndActivity(endActivityHandler.gameObject, 1000, CodeEnvironmentHandler.elapsedTime);
+            });
         }
     }
 

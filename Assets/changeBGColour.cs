@@ -21,7 +21,7 @@ public class changeBGColour : MonoBehaviour
         if (toggle.isOn == true)
         {
             //Camera.main.backgroundColor = newColour;
-            Debug.Log("Checked");
+            //Debug.Log("Checked");
             Camera.main.backgroundColor = new Color(0.145098f, 0.145098f, 0.1490196f);
 
             label.color = new Color(1f, 1f, 1f);
@@ -29,7 +29,7 @@ public class changeBGColour : MonoBehaviour
         }
         else {
             Camera.main.backgroundColor = new Color(0.929f, 0.929f, 0.929f);
-            Debug.Log("Unchecked");
+            //Debug.Log("Unchecked");
             label.color = new Color(0.102f, 0.102f, 0.102f);
         }
 

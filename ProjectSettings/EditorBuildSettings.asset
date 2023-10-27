@@ -15,9 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/HomeScene.unity
     guid: 20f84ba266c00054887f90a2ce6215bd
   - enabled: 1
-    path: Assets/Scenes/StoryScene.unity
-    guid: 3ab8f6b8396b0b14eb302e59437c9d30
-  - enabled: 1
-    path: Assets/Scenes/CodeRunner.unity
+    path: Assets/Scenes/CODERUNNER.unity
     guid: d1d1eac601e841042a49ad8219eaaba6
+  - enabled: 1
+    path: Assets/Scenes/MISSION_IMPOSSIBLE_PRESIDENTIAL_PROTECTOR.unity
+    guid: 81f6e4863cbd37d4a885a787ddd222f1
+  - enabled: 1
+    path: Assets/Scenes/CODE_ENVIRONMENT.unity
+    guid: c168dd6310228134c8410d7b3aafc405
   m_configObjects: {}

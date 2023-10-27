@@ -52,15 +52,17 @@ public abstract class Activity
 
     void OnPlayClick()
     {
-        if (activityType  == ActivityType.Minigame)
-        {
-            SceneManager.LoadSceneAsync(name);
-        } else
-        {
-            // In the future, make a separate Scene for every story and call them by their codenames
-            SceneManager.LoadSceneAsync("StoryScene");
-            // When we add more stories we can do SceneManager.LoadSceneAsync(codeName);
-        }
+        SceneManager.LoadSceneAsync(codeName);
+
+        //if (activityType  == ActivityType.Minigame)
+        //{
+        //    SceneManager.LoadSceneAsync(name);
+        //} else
+        //{
+        //    // In the future, make a separate Scene for every story and call them by their codenames
+        //    SceneManager.LoadSceneAsync("StoryMapScene");
+        //    // When we add more stories we can do SceneManager.LoadSceneAsync(codeName);
+        //}
     }
 
     public string GetName()

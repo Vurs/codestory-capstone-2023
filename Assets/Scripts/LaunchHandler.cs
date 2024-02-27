@@ -98,38 +98,6 @@ public class LaunchHandler : MonoBehaviour
         }
     }
 
-    //private void AuthStateChanged(object sender, System.EventArgs eventArgs)
-    //{
-    //    if (auth.CurrentUser != user)
-    //    {
-    //        bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
-    //        if (!signedIn && user != null)
-    //        {
-    //            Debug.Log("Signed out " + user.UserId);
-    //        }
-    //        user = auth.CurrentUser;
-    //        if (signedIn)
-    //        {
-    //            Debug.Log("Signed in " + user.UserId);
-
-    //            DateTime currentTime = DateTime.UtcNow;
-    //            DateTimeOffset currentDateTimeOffset = new DateTimeOffset(currentTime);
-    //            long unixTimestampMillis = currentDateTimeOffset.ToUnixTimeMilliseconds();
-    //            rootReference.Child("users").Child(user.UserId).Child("lastSignIn").SetValueAsync(unixTimestampMillis).ContinueWithOnMainThread(task =>
-    //            {
-    //                if (task.IsCompleted)
-    //                {
-    //                    Debug.Log("Last sign-in timestamp updated in the database.");
-    //                }
-    //                else
-    //                {
-    //                    Debug.LogError("Error updating last sign-in timestamp: " + task.Exception);
-    //                }
-    //            });
-    //        }
-    //    }
-    //}
-
     private void OnDestroy()
     {
         auth.StateChanged -= AuthStateChanged;
